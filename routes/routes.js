@@ -99,7 +99,11 @@ router.post("/pedido/post", async (req, res) => {
 //Get All
 router.get("/pedido/getAll", async (req, res) => {
   try {
-    const data = await Pedido.find();
+    const data = await Pedido.find().populate({
+      path: 'lista_equipos.equipo',
+      select:
+        'descripcion clase',
+    });
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });
