@@ -4,6 +4,7 @@ const Equipo = require("../models/equipo");
 const Pedido = require("../models/pedido");
 const Material = require("../models/material");
 const Reactivo = require("../models/reactivo");
+const Usuario = require("../models/usuario");
 
 //Verbos para equipos
 //Post de un equipo
@@ -302,5 +303,92 @@ router.delete("/reactivo/delete/:id", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
+
+//Verbos para usuarios
+//Post de un equipo
+router.post("/usuario/post", async (req, res) => {
+  const data = new Usuario({
+    usuario: req.body.usuario,
+    contrasenia: req.body.contrasenia,
+    nombre: req.body.nombre,
+    apellido: req.body.apellido,
+    dni: req.body.dni,
+    matricula: req.body.matricula,
+    admin: req.body.admin
+  });
+
+  try {
+    const dataToSave = await data.save();
+    res.status(200).json(dataToSave);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+//Get All
+router.get("/usuario/getAll", async (req, res) => {
+  try {
+    const data = await Usuario.find();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+//Get por id
+router.get("/usuario/getOne/:id", async (req, res) => {
+  try {
+    const data = await Usuario.findById(req.params.id);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+//Get por usuario y contrasenia
+router.get("/usuario/getOneByUsuarioContrasenia/:usuario/:contrasenia", async (req, res) => {
+  try {
+
+    const usuario = req.params.usuario;
+    const contrasenia = req.params.contrasenia;
+
+    const data = await Usuario.find({"usuario": usuario , "contrasenia":contrasenia});
+
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+//Update por id
+router.patch("/usuario/update/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const updatedData = req.body;
+    const options = { new: true };
+
+    const result = await Usuario.findByIdAndUpdate(id, updatedData, options);
+
+    res.send(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+//Delete por id
+router.delete("/usuario/delete/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Usuario.findByIdAndDelete(id);
+    res.send(
+      `Usuario con nombre ${data.nombre} y id ${id} fue eliminado correctamente`
+    );
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+
 
 module.exports = router;
