@@ -49,10 +49,26 @@ const dataSchema = new mongoose.Schema({
         type: Number,
       },
       equipo: { type: mongoose.Schema.Types.ObjectId, ref: "Equipo" },
-    },
+    }
   ],
-  // lista_reactivos: [],
-  // lista_materiales: [],
+  lista_reactivos: [
+    {
+      cantidad: {
+        required: true,
+        type: Number,
+      },
+      reactivo: { type: mongoose.Schema.Types.ObjectId, ref: "Reactivo" },
+    }
+  ],
+  lista_materiales: [
+    {
+      cantidad: {
+        required: true,
+        type: Number,
+      },
+      material: { type: mongoose.Schema.Types.ObjectId, ref: "Material" },
+    }
+  ]
 });
 
 module.exports = mongoose.model("Pedido", dataSchema);
