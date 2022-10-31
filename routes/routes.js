@@ -88,7 +88,9 @@ router.post("/pedido/post", async (req, res) => {
     observaciones: req.body.observaciones,
     materia: req.body.materia,
     numero_tp: req.body.numero_tp,
-    lista_equipos: req.body.lista_equipos
+    lista_equipos: req.body.lista_equipos,
+    lista_reactivos: req.body.lista_reactivos,
+    lista_materiales: req.body.lista_materiales
   });
 
   try {
@@ -106,7 +108,17 @@ router.get("/pedido/getAll", async (req, res) => {
       path: 'lista_equipos.equipo',
       select:
         'descripcion clase',
-    });
+    })
+      .populate({
+        path: 'lista_materiales.material',
+        select:
+          'descripcion cantidad',
+      })
+      .populate({
+        path: 'lista_reactivos.reactivo',
+        select:
+          'descripcion cas calidad concentracion_tipo disolvente cantidad concentracion_medida',
+      });
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -175,7 +187,7 @@ router.post("/material/post", async (req, res) => {
     clase: req.body.clase,
     descripcion: req.body.descripcion,
     stock: req.body.stock,
-    unidadMedida: req.body.unidadMedida,
+    unidadDeMedida: req.body.unidadDeMedida,
     cantidad: req.body.cantidad
   });
 
@@ -353,7 +365,7 @@ router.get("/usuario/getOneByUsuarioContrasenia/:usuario/:contrasenia", async (r
     const usuario = req.params.usuario;
     const contrasenia = req.params.contrasenia;
 
-    const data = await Usuario.find({"usuario": usuario , "contrasenia":contrasenia});
+    const data = await Usuario.find({ "usuario": usuario, "contrasenia": contrasenia });
 
     res.json(data);
   } catch (error) {
