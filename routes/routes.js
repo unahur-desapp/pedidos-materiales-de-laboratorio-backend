@@ -77,6 +77,7 @@ router.delete("/equipo/delete/:id", async (req, res) => {
 //Verbos para pedidos
 //Post de un pedido
 router.post("/pedido/post", async (req, res) => {
+ 
   const data = new Pedido({
     docente: req.body.docente,
     descripcion: req.body.descripcion,
@@ -132,7 +133,21 @@ router.get("/pedido/getAllByDni/:dni", async (req, res) => {
   try {
     const dni = req.params.dni;
 
-    const data = await Pedido.find({ "docente.dni": dni });
+    const data = await Pedido.find({ "docente.dni": dni }).populate({
+      path: 'lista_equipos.equipo',
+      select:
+        'descripcion clase',
+    })
+      .populate({
+        path: 'lista_materiales.material',
+        select:
+          'descripcion cantidad',
+      })
+      .populate({
+        path: 'lista_reactivos.reactivo',
+        select:
+          'descripcion cas calidad concentracion_tipo disolvente cantidad concentracion_medida',
+      });
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });
