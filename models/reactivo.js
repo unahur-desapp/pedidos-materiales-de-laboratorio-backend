@@ -8,25 +8,8 @@ const dataSchema = new mongoose.Schema({
     cas: {
         required: true,
         type: String,
-    },
-    calidad: {
-        required: true,
-        type: String,
-    },
-    concentracion_tipo: {
-        required: true,
-        type: String,
-    },
-    concentracion_medida: {
-        required: true,
-        type: Number,
-    },
-    disolvente: {
-        required: true,
-        type: String,
-    },
-    cantidad: {
-        required: true,
+    },   
+    stock: {
         type: Number,
     }
 });

@@ -108,18 +108,19 @@ router.get("/pedido/getAll", async (req, res) => {
     const data = await Pedido.find().populate({
       path: 'lista_equipos.equipo',
       select:
-        'descripcion clase',
+        'descripcion clase ', 
     })
       .populate({
         path: 'lista_materiales.material',
         select:
-          'descripcion cantidad',
+          'descripcion clase',
       })
       .populate({
         path: 'lista_reactivos.reactivo',
         select:
-          'descripcion cas calidad concentracion_tipo disolvente cantidad concentracion_medida',
+          'descripcion cas',
       });
+      
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -146,7 +147,7 @@ router.get("/pedido/getAllByDni/:dni", async (req, res) => {
       .populate({
         path: 'lista_reactivos.reactivo',
         select:
-          'descripcion cas calidad concentracion_tipo disolvente cantidad concentracion_medida',
+          'descripcion cas',
       });
     res.json(data);
   } catch (error) {
@@ -168,8 +169,11 @@ router.get("/pedido/getOne/:id", async (req, res) => {
 
 //Update por id
 router.patch("/pedido/update/:id", async (req, res) => {
+ 
+
   try {
     const id = req.params.id;
+    
     const updatedData = req.body;
     const options = { new: true };
 
@@ -225,7 +229,7 @@ router.get("/material/getAll", async (req, res) => {
 });
 
 //Get por id
-router.get("/material/getOne/:id", async (req, res) => {
+router.get("/material/getOne/:id", async (req, res) => {lista_reactivos
   try {
     const data = await Material.findById(req.params.id);
     res.json(data);
@@ -268,11 +272,8 @@ router.post("/reactivo/post", async (req, res) => {
   const data = new Reactivo({
     cas: req.body.cas,
     descripcion: req.body.descripcion,
-    calidad: req.body.calidad,
-    concentracion_tipo: req.body.concentracion_tipo,
-    concentracion_medida: req.body.concentracion_medida,
-    disolvente: req.body.disolvente,
-    cantidad: req.body.cantidad
+    stock: req.body.stock,
+    
   });
 
   try {

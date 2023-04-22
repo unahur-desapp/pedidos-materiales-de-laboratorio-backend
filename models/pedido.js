@@ -57,6 +57,29 @@ const dataSchema = new mongoose.Schema({
         required: true,
         type: Number,
       },
+      un_medida: {
+        required: true,
+        type: String,
+      },
+      calidad: {
+        required: true,
+        type: String,
+      },
+      concentracion_tipo: {
+        required: true,
+        type: String,
+      },
+      concentracion_medida: {
+        required: true,
+        type: String,
+      },
+      disolvente: {
+        required: true,
+        type: String,
+      },
+      otro_disolvente_descripcion: {
+        type: String,
+      },
       reactivo: { type: mongoose.Schema.Types.ObjectId, ref: "Reactivo" },
     }
   ],
