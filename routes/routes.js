@@ -85,6 +85,8 @@ router.post("/pedido/post", async (req, res) => {
     fecha_utilizacion: req.body.fecha_utilizacion,
     numero_laboratorio: req.body.numero_laboratorio,
     tipo_pedido: req.body.tipo_pedido,
+    alumnos: req.body.alumnos,
+    edificio: req.body.edificio,
     cantidad_grupos: req.body.cantidad_grupos,
     observaciones: req.body.observaciones,
     materia: req.body.materia,
