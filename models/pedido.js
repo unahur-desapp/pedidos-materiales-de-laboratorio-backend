@@ -27,6 +27,13 @@ const dataSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
+  alumnos: {
+    required: true,
+    type: Number, 
+  },
+  edificio: {
+    type: String,
+  },
   cantidad_grupos: {
     required: true,
     type: Number,
