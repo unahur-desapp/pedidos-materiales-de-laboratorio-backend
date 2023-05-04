@@ -157,7 +157,32 @@ router.get("/pedido/getAllByDni/:dni", async (req, res) => {
   }
 });
 
+//Get All By State (tipo_pedido)
 
+router.get("/pedido/getAllByState/:tipo_pedido", async (req, res) => {
+  try {
+    const tipo_pedido = req.params.tipo_pedido;
+
+    const data = await Pedido.find({ "tipo_pedido": tipo_pedido }).populate({
+      path: 'lista_equipos.equipo',
+      select:
+        'descripcion clase',
+    })
+      .populate({
+        path: 'lista_materiales.material',
+        select:
+          'descripcion cantidad',
+      })
+      .populate({
+        path: 'lista_reactivos.reactivo',
+        select:
+          'descripcion cas',
+      });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 //Get por id
 router.get("/pedido/getOne/:id", async (req, res) => {
