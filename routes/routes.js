@@ -142,7 +142,7 @@ router.get("/pedido/getAllByDni/:dni", async (req, res) => {
       .populate({
         path: 'lista_materiales.material',
         select:
-          'descripcion cantidad',
+          'descripcion clase',
       })
       .populate({
         path: 'lista_reactivos.reactivo',
@@ -154,7 +154,31 @@ router.get("/pedido/getAllByDni/:dni", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+// getAllUseDate/  fecha_utilizacion:
+router.get("/pedido/getAllUseDate/:fecha_utilizacion", async (req, res) => {
+  try {
+    const dni = req.params.dni;
 
+    const data = await Pedido.find({ "fecha_utilizacion": fecha_utilizacion }).populate({
+      path: 'lista_equipos.equipo',
+      select:
+        'descripcion clase',
+    })
+      .populate({
+        path: 'lista_materiales.material',
+        select:
+          'descripcion clase',
+      })
+      .populate({
+        path: 'lista_reactivos.reactivo',
+        select:
+          'descripcion cas',
+      });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 
 //Get por id
