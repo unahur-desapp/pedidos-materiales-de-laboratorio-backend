@@ -171,7 +171,7 @@ router.get("/pedido/getAllByState/:tipo_pedido", async (req, res) => {
       .populate({
         path: 'lista_materiales.material',
         select:
-          'descripcion cantidad',
+          'descripcion clase',
       })
       .populate({
         path: 'lista_reactivos.reactivo',
