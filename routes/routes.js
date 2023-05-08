@@ -209,7 +209,62 @@ router.get("/pedido/getAllUseDate/:fecha_utilizacion", async (req, res) => {
   }
 });
 
+router.get('/pedido', async (req, res) => {
+  const { fecha_utilizacion, tipo_pedido, fecha_inicio, fecha_fin, edificio } = req.query;
 
+  try {
+    let query = {};
+
+    if (fecha_utilizacion) {
+      const fechaUtilizacionStart = new Date(fecha_utilizacion);
+      fechaUtilizacionStart.setUTCHours(0, 0, 0, 0);
+      const fechaUtilizacionEnd = new Date(fecha_utilizacion);
+      fechaUtilizacionEnd.setUTCHours(23, 59, 59, 999);
+
+      query.fecha_utilizacion = {
+        $gte: fechaUtilizacionStart,
+        $lte: fechaUtilizacionEnd
+      };
+    }
+
+    if (tipo_pedido) {
+      query.tipo_pedido = tipo_pedido;
+    }
+    if (fecha_inicio && fecha_fin) {
+      const fechaUtilizacionStart = new Date(fecha_inicio);
+      fechaUtilizacionStart.setUTCHours(0, 0, 0, 0);
+      const fechaUtilizacionEnd = new Date(fecha_fin);
+      fechaUtilizacionEnd.setUTCHours(23, 59, 59, 999);
+
+      query.fecha_utilizacion = {
+        $gte: fechaUtilizacionStart,
+        $lte: fechaUtilizacionEnd
+      };
+    }
+    if (edificio) {
+      query.edificio = edificio;
+    }
+    const pedidos = await Pedido.find(query).populate({
+      path: 'lista_equipos.equipo',
+      select:
+        'descripcion clase',
+    })
+      .populate({
+        path: 'lista_materiales.material',
+        select:
+          'descripcion clase',
+      })
+      .populate({
+        path: 'lista_reactivos.reactivo',
+        select:
+          'descripcion cas',
+      });
+
+    res.json(pedidos);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 //Get por id
 router.get("/pedido/getOne/:id", async (req, res) => {
