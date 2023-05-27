@@ -219,6 +219,7 @@ router.get('/pedido', async (req, res) => {
       const fechaUtilizacionStart = new Date(fecha_utilizacion);
       fechaUtilizacionStart.setUTCHours(0, 0, 0, 0);
       const fechaUtilizacionEnd = new Date(fecha_utilizacion);
+   
       fechaUtilizacionEnd.setUTCHours(23, 59, 59, 999);
 
       query.fecha_utilizacion = {
@@ -452,7 +453,9 @@ router.post("/usuario/post", async (req, res) => {
     apellido: req.body.apellido,
     dni: req.body.dni,
     matricula: req.body.matricula,
-    admin: req.body.admin
+    admin: req.body.admin,
+    email: req.body.email,
+    editor: req.body.editor
   });
 
   try {

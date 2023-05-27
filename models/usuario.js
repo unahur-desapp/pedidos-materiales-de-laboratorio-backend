@@ -22,13 +22,22 @@ const dataSchema = new mongoose.Schema({
         type: Number
     },
     matricula: {
-        required: true,
+        required: false,
         type: Number
     },
     admin: {
         required: true,
         type: Boolean
-    }
+    },
+    email:{
+        required: true,
+        type: String 
+    },
+    editor: {
+        required: true,
+        type: Boolean
+    },
+
 });
 
 module.exports = mongoose.model("Usuario", dataSchema);
