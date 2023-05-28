@@ -23,7 +23,29 @@ router.post("/equipo/post", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+router.get("/equipos/", async (req, res) => {
+  const buscar = req.query.buscar;
 
+  try {
+    let consulta = {
+      equipo: { $regex: buscar, $options: "i" }
+    };
+
+    if(buscar) {
+        consulta = {
+          $or: [
+            { descripcion: { $regex: buscar, $options: "i" } },
+          ]
+        };
+    }
+
+    const equipos = await Equipo.find(consulta);
+
+    res.json(equipos);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 //Get All
 router.get("/equipo/getAll", async (req, res) => {
   try {
@@ -326,7 +348,29 @@ router.post("/material/post", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+router.get("/materiales/", async (req, res) => {
+  const buscar = req.query.buscar;
 
+  try {
+    let consulta = {
+      material: { $regex: buscar, $options: "i" }
+    };
+
+    if(buscar) {
+        consulta = {
+          $or: [
+            { descripcion: { $regex: buscar, $options: "i" } },
+          ]
+        };
+    }
+
+    const materiales = await Material.find(consulta);
+
+    res.json(materiales);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 //Get All
 router.get("/material/getAll", async (req, res) => {
   try {
@@ -392,6 +436,31 @@ router.post("/reactivo/post", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+router.get("/reactivos/", async (req, res) => {
+  const buscar = req.query.buscar;
+
+  try {
+    let consulta = {
+      reactivo: { $regex: buscar, $options: "i" }
+    };
+
+    if(buscar) {
+        consulta = {
+          $or: [
+            { descripcion: { $regex: buscar, $options: "i" } },
+            { cas: { $regex: buscar, $options: "i" } }
+          ]
+        };
+    }
+
+    const reactivos = await Reactivo.find(consulta);
+
+    res.json(reactivos);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 //Get All
 router.get("/reactivo/getAll", async (req, res) => {
@@ -493,6 +562,34 @@ router.get("/usuario/getOneByUsuarioContrasenia/:usuario/:contrasenia", async (r
     const data = await Usuario.find({ "usuario": usuario, "contrasenia": contrasenia });
 
     res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+router.get("/usuarios/", async (req, res) => {
+  const buscar = req.query.buscar;
+
+  try {
+    let consulta = {};
+
+    if (buscar !== undefined) {
+      if (!isNaN(buscar)) {
+        consulta = {
+          $or: [
+            { usuario: { $regex: buscar, $options: "i" } },
+            { dni: Number(buscar) }
+          ]
+        };
+      } else {
+        consulta = {
+          usuario: { $regex: buscar, $options: "i" }
+        };
+      }
+    }
+
+    const usuarios = await Usuario.find(consulta);
+
+    res.json(usuarios);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
