@@ -5,13 +5,10 @@ const dataSchema = new mongoose.Schema({
         required: true,
         type: String,
     },
-    cantidad: {
+  
+    unidadMedida: {
         required: true,
-        type: Number,
-    },
-    unidadDeMedida: {
-        required: true,
-        type: Number,
+        type: String,
     },
     clase: {
         required: true,
