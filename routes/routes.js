@@ -338,8 +338,8 @@ router.post("/material/post", async (req, res) => {
     clase: req.body.clase,
     descripcion: req.body.descripcion,
     stock: req.body.stock,
-    unidadDeMedida: req.body.unidadDeMedida,
-    cantidad: req.body.cantidad
+    unidadMedida: req.body.unidadMedida
+   
   });
 
   try {
