@@ -77,11 +77,11 @@ const dataSchema = new mongoose.Schema({
         type: String,
       },
       concentracion_medida: {
-        required: true,
+        // required: true,
         type: String,
       },
       disolvente: {
-        required: true,
+        // required: true,
         type: String,
       },
       otro_disolvente_descripcion: {
