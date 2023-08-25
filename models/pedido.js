@@ -27,6 +27,13 @@ const dataSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
+  alumnos: {
+    required: true,
+    type: Number, 
+  },
+  edificio: {
+    type: String,
+  },
   cantidad_grupos: {
     required: true,
     type: Number,
@@ -49,10 +56,49 @@ const dataSchema = new mongoose.Schema({
         type: Number,
       },
       equipo: { type: mongoose.Schema.Types.ObjectId, ref: "Equipo" },
-    },
+    }
   ],
-  // lista_reactivos: [],
-  // lista_materiales: [],
+  lista_reactivos: [
+    {
+      cantidad: {
+        required: true,
+        type: Number,
+      },
+      un_medida: {
+        required: true,
+        type: String,
+      },
+      calidad: {
+        required: true,
+        type: String,
+      },
+      concentracion_tipo: {
+        required: true,
+        type: String,
+      },
+      concentracion_medida: {
+        // required: true,
+        type: String,
+      },
+      disolvente: {
+        // required: true,
+        type: String,
+      },
+      otro_disolvente_descripcion: {
+        type: String,
+      },
+      reactivo: { type: mongoose.Schema.Types.ObjectId, ref: "Reactivo" },
+    }
+  ],
+  lista_materiales: [
+    {
+      cantidad: {
+        required: true,
+        type: Number,
+      },
+      material: { type: mongoose.Schema.Types.ObjectId, ref: "Material" },
+    }
+  ]
 });
 
 module.exports = mongoose.model("Pedido", dataSchema);
