@@ -14,7 +14,7 @@ app.listen(3000, () => {
 
 require("dotenv").config();
 
-const mongoString = process.env.DATABASE_URL;
+const mongoString = process.env.URI_MONGO;
 
 mongoose.connect(mongoString);
 const database = mongoose.connection;
