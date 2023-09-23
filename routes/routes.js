@@ -5,6 +5,8 @@ const Pedido = require("../models/pedido");
 const Material = require("../models/material");
 const Reactivo = require("../models/reactivo");
 const Usuario = require("../models/usuario");
+const bcrypt = require('bcrypt');
+
 
 //Verbos para equipos
 //Post de un equipo
@@ -556,19 +558,21 @@ router.get("/usuario/getOne/:id", async (req, res) => {
 });
 
 //Get por usuario y contrasenia
-router.get("/usuario/getOneByUsuarioContrasenia/:usuario/:contrasenia", async (req, res) => {
+router.post("/usuario/getOneByUsuarioContrasenia", async (req, res) => {
   try {
-
-    const usuario = req.params.usuario;
-    const contrasenia = req.params.contrasenia;
-
-    const data = await Usuario.find({ "usuario": usuario, "contrasenia": contrasenia });
-
-    res.json(data);
+    const {usuario, password} = req.body;
+    const contrasenia = Buffer.from(password, 'base64').toString()
+    const user = await Usuario.findOne({usuario, contrasenia}).lean();
+    // console.log(passValidated)
+    // if(!passValidated){
+    //   return res.status(401).json({auth: "Fallo", token: null})
+    // }
+    res.json({...user, contrasenia: ''});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
 router.get("/usuarios/", async (req, res) => {
   const buscar = req.query.buscar;
 
