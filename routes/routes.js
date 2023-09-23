@@ -562,12 +562,18 @@ router.post("/usuario/getOneByUsuarioContrasenia", async (req, res) => {
   try {
     const {usuario, password} = req.body;
     const contrasenia = Buffer.from(password, 'base64').toString()
-    const user = await Usuario.findOne({usuario, contrasenia}).lean();
+    const user = await Usuario.findOne({
+      usuario,
+      contrasenia
+      },{
+      contrasenia: 0 //exclude field
+      }).lean();
     // console.log(passValidated)
     // if(!passValidated){
     //   return res.status(401).json({auth: "Fallo", token: null})
     // }
-    res.json({...user, contrasenia: ''});
+    console.log(user)
+    res.json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
