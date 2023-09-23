@@ -572,7 +572,6 @@ router.post("/usuario/getOneByUsuarioContrasenia", async (req, res) => {
     // if(!passValidated){
     //   return res.status(401).json({auth: "Fallo", token: null})
     // }
-    console.log(user)
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
