@@ -5,8 +5,6 @@ const Pedido = require("../models/pedido");
 const Material = require("../models/material");
 const Reactivo = require("../models/reactivo");
 const Usuario = require("../models/usuario");
-const bcrypt = require('bcrypt');
-
 
 //Verbos para equipos
 //Post de un equipo

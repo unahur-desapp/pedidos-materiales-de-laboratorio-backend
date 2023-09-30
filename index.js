@@ -1,30 +1,37 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const routes = require("./routes/routes");
-const cors = require('cors');
+require("dotenv").config();
+require('./database/connectDb'); 
+const authRoute = require("./routes/auth.route");
+const equipoRoute = require("./routes/equipo.route");
+const materialRoute = require("./routes/material.route");
+const pedidoRoute = require("./routes/pedido.route");
+const reactivoRoute = require("./routes/reactivo.route");
+const userRoute = require("./routes/user.route");
 
+const express = require("express");
 const app = express();
-app.use(cors());
+
+const cors = require('cors');
+const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
+app.use(cors({
+    // usando funcion de callback no pueden entrar a los controladores
+    origin: function(origin, callback){
+        if(!origin || whiteList.includes(origin)){ // para pruebas de postman se ponen sin origin, para que no bloquee el cors
+            return callback(null, origin)
+        }
+        return callback('error de Cors ' + origin + " no autorizado!")
+    },
+    credentials:true
+}))
 
 app.use(express.json());
 
-app.listen(3000, () => {
-  console.log(`Server Started at ${3000}`);
+app.use("/api/auth", authRoute);
+app.use("/api/equipo", equipoRoute);
+app.use("/api/material", materialRoute);
+app.use("/api/pedido", pedidoRoute);
+app.use("/api/reactivo", reactivoRoute);
+app.use("/api/usuario", userRoute);
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server Started at ${process.env.PORT}`);
 });
-
-require("dotenv").config();
-
-const mongoString = process.env.URI_MONGO;
-
-mongoose.connect(mongoString);
-const database = mongoose.connection;
-
-database.on("error", (error) => {
-  console.log(error);
-});
-
-database.once("connected", () => {
-  console.log("Database Connected");
-});
-
-app.use("/api", routes);

@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
 
-const dataSchema = new mongoose.Schema({
+const DataSchema = new mongoose.Schema({
     usuario: {
         required: true,
         type: String
@@ -38,11 +38,15 @@ const dataSchema = new mongoose.Schema({
         required: true,
         type: Boolean
     },
+    rol:{
+        required: true,
+        type: String 
+    },
 
 });
 
-dataSchema.pre('save', async function(next) { // se trabaja con function para tener scope del "this"
-    if(!this.isModified('password')){
+DataSchema.pre('save', async function(next) { // se trabaja con function para tener scope del "this"
+    if(!this.isModified('contrasenia')){
         return next()
     }
     try {
@@ -55,8 +59,8 @@ dataSchema.pre('save', async function(next) { // se trabaja con function para te
     }
 })
 
-dataSchema.methods.comparePassword = async function(candidatePassword){
+DataSchema.methods.comparePassword = async function(candidatePassword){
     return await bcrypt.compare(candidatePassword, this.contrasenia)
 }
 
-module.exports = mongoose.model("Usuario", dataSchema);
+module.exports = mongoose.model("Usuario", DataSchema);
