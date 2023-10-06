@@ -15,8 +15,10 @@ const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
 app.use(cors({
     // usando funcion de callback no pueden entrar a los controladores
     origin: function(origin, callback){
-        if(!origin || whiteList.includes(origin)){// para pruebas de postman se ponen sin origin, para que no bloquee el cors
-            return callback(null, origin)
+        if(!origin ||
+             whiteList //MODO TESTING
+             //whiteList.includes(origin) //MODO PRODUCCTION
+             ){
         }
         return callback('error de Cors ' + origin + " no autorizado!")
     },
