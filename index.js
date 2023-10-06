@@ -19,6 +19,7 @@ app.use(cors({
              whiteList //MODO TESTING
              //whiteList.includes(origin) //MODO PRODUCCTION
              ){
+                return callback(null, origin)
         }
         return callback('error de Cors ' + origin + " no autorizado!")
     },
