@@ -2,36 +2,35 @@ const express = require("express");
 const router = express.Router();
 const Reactivo = require("../models/reactivo");
 
-module.exports.crearReactivo = async (req, res)=> {
-    const data = new Reactivo({
-      cas: req.body.cas,
-      descripcion: req.body.descripcion,
-      stock: req.body.stock,
-      
-    });
-  
-    try {
-      const dataToSave = await data.save();
-      return res.status(200).json(dataToSave);
-    } catch (error) {
-      return res.status(400).json({ message: error.message });
-    }
-  };
-module.exports.getReactivo = async (req, res)=> {
+module.exports.crearReactivo = async (req, res) => {
+  const data = new Reactivo({
+    cas: req.body.cas,
+    descripcion: req.body.descripcion,
+    stock: req.body.stock,
+  });
+
+  try {
+    const dataToSave = await data.save();
+    return res.status(200).json(dataToSave);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+module.exports.getReactivo = async (req, res) => {
   const buscar = req.query.buscar;
 
   try {
     let consulta = {
-      reactivo: { $regex: buscar, $options: "i" }
+      reactivo: { $regex: buscar, $options: "i" },
     };
 
-    if(buscar) {
-        consulta = {
-          $or: [
-            { descripcion: { $regex: buscar, $options: "i" } },
-            { cas: { $regex: buscar, $options: "i" } }
-          ]
-        };
+    if (buscar) {
+      consulta = {
+        $or: [
+          { descripcion: { $regex: buscar, $options: "i" } },
+          { cas: { $regex: buscar, $options: "i" } },
+        ],
+      };
     }
 
     const reactivos = await Reactivo.find(consulta);
@@ -42,9 +41,8 @@ module.exports.getReactivo = async (req, res)=> {
   }
 };
 
-
 //Get All
-module.exports.getReactivos = async (req, res)=> {
+module.exports.getReactivos = async (req, res) => {
   try {
     const data = await Reactivo.find();
     return res.json(data);
@@ -54,7 +52,7 @@ module.exports.getReactivos = async (req, res)=> {
 };
 
 //Get por id
-module.exports.getReactivosById = async (req, res)=> {
+module.exports.getReactivosById = async (req, res) => {
   try {
     const data = await Reactivo.findById(req.params.id);
     return res.json(data);
@@ -64,7 +62,7 @@ module.exports.getReactivosById = async (req, res)=> {
 };
 
 //Update por id
-module.exports.updateReactivoById = async (req, res)=> {
+module.exports.updateReactivoById = async (req, res) => {
   try {
     const id = req.params.id;
     const updatedData = req.body;
@@ -79,7 +77,7 @@ module.exports.updateReactivoById = async (req, res)=> {
 };
 
 //Delete por id
-module.exports.deleteReactivoById = async (req, res)=> {
+module.exports.deleteReactivoById = async (req, res) => {
   try {
     const id = req.params.id;
     const data = await Reactivo.findByIdAndDelete(id);

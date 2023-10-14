@@ -16,7 +16,7 @@ const dataSchema = new mongoose.Schema({
   unidadMedida: {
     required: true,
     type: String,
-  }
+  },
 });
 
 module.exports = mongoose.model("Equipo", dataSchema);

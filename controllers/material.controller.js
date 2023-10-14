@@ -2,13 +2,12 @@ const Material = require("../models/material");
 
 //Verbos para materiales
 //Post de un material
-module.exports.crearMaterial = async (req, res)=> {
+module.exports.crearMaterial = async (req, res) => {
   const data = new Material({
     clase: req.body.clase,
     descripcion: req.body.descripcion,
     stock: req.body.stock,
-    unidadMedida: req.body.unidadMedida
-    
+    unidadMedida: req.body.unidadMedida,
   });
 
   try {
@@ -18,20 +17,18 @@ module.exports.crearMaterial = async (req, res)=> {
     return res.status(400).json({ message: error.message });
   }
 };
-module.exports.getMaterial = async (req, res)=> {
+module.exports.getMaterial = async (req, res) => {
   const buscar = req.query.buscar;
 
   try {
     let consulta = {
-      material: { $regex: buscar, $options: "i" }
+      material: { $regex: buscar, $options: "i" },
     };
 
-    if(buscar) {
-        consulta = {
-          $or: [
-            { descripcion: { $regex: buscar, $options: "i" } },
-          ]
-        };
+    if (buscar) {
+      consulta = {
+        $or: [{ descripcion: { $regex: buscar, $options: "i" } }],
+      };
     }
 
     const materiales = await Material.find(consulta);
@@ -42,7 +39,7 @@ module.exports.getMaterial = async (req, res)=> {
   }
 };
 //Get All
-module.exports.getMateriales = async (req, res)=> {
+module.exports.getMateriales = async (req, res) => {
   try {
     const data = await Material.find();
     return res.json(data);
@@ -52,8 +49,8 @@ module.exports.getMateriales = async (req, res)=> {
 };
 
 //Get por id
-module.exports.getMaterialById = async (req, res)=>  {
-  lista_reactivos
+module.exports.getMaterialById = async (req, res) => {
+  lista_reactivos;
   try {
     const data = await Material.findById(req.params.id);
     return res.json(data);
@@ -63,7 +60,7 @@ module.exports.getMaterialById = async (req, res)=>  {
 };
 
 //Update por id
-module.exports.updateMaterialById = async (req, res)=> {
+module.exports.updateMaterialById = async (req, res) => {
   try {
     const id = req.params.id;
     const updatedData = req.body;
@@ -78,7 +75,7 @@ module.exports.updateMaterialById = async (req, res)=> {
 };
 
 //Delete por id
-module.exports.deleteMaterial = async (req, res)=> {
+module.exports.deleteMaterial = async (req, res) => {
   try {
     const id = req.params.id;
     const data = await Material.findByIdAndDelete(id);

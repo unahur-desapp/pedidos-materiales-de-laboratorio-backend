@@ -1,35 +1,33 @@
 const Equipo = require("../models/equipo");
 
-module.exports.crearEquipo = async (req, res)=> {
-    const data = new Equipo({
-      clase: req.body.clase,
-      descripcion: req.body.descripcion,
-      stock: req.body.stock,
-      unidadMedida: req.body.unidadMedida,
-    });
-  
-    try {
-      const dataToSave = await data.save();
-      return res.status(200).json(dataToSave);
-    } catch (error) {
-      return res.status(400).json({ message: error.message });
-    }
-  };
+module.exports.crearEquipo = async (req, res) => {
+  const data = new Equipo({
+    clase: req.body.clase,
+    descripcion: req.body.descripcion,
+    stock: req.body.stock,
+    unidadMedida: req.body.unidadMedida,
+  });
 
-  module.exports.getEquipo = async (req, res)=> {
+  try {
+    const dataToSave = await data.save();
+    return res.status(200).json(dataToSave);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+module.exports.getEquipo = async (req, res) => {
   const buscar = req.query.buscar;
 
   try {
     let consulta = {
-      equipo: { $regex: buscar, $options: "i" }
+      equipo: { $regex: buscar, $options: "i" },
     };
 
-    if(buscar) {
-        consulta = {
-          $or: [
-            { descripcion: { $regex: buscar, $options: "i" } },
-          ]
-        };
+    if (buscar) {
+      consulta = {
+        $or: [{ descripcion: { $regex: buscar, $options: "i" } }],
+      };
     }
 
     const equipos = await Equipo.find(consulta);
@@ -40,7 +38,7 @@ module.exports.crearEquipo = async (req, res)=> {
   }
 };
 //Get All
-module.exports.getEquipos = async (req, res)=> {
+module.exports.getEquipos = async (req, res) => {
   try {
     const data = await Equipo.find();
     return res.json(data);
@@ -48,9 +46,8 @@ module.exports.getEquipos = async (req, res)=> {
     return res.status(500).json({ message: error.message });
   }
 };
-
 //Get por id
-module.exports.getEquipoById = async (req, res)=> {
+module.exports.getEquipoById = async (req, res) => {
   try {
     const data = await Equipo.findById(req.params.id);
     return res.json(data);
@@ -58,9 +55,8 @@ module.exports.getEquipoById = async (req, res)=> {
     return res.status(500).json({ message: error.message });
   }
 };
-
 //Update por id
-module.exports.updateEquipoById = async (req, res)=> {
+module.exports.updateEquipoById = async (req, res) => {
   try {
     const id = req.params.id;
     const updatedData = req.body;
@@ -73,9 +69,8 @@ module.exports.updateEquipoById = async (req, res)=> {
     return res.status(400).json({ message: error.message });
   }
 };
-
 //Delete por id
-module.exports.deleteEquipoById = async (req, res)=> {
+module.exports.deleteEquipoById = async (req, res) => {
   try {
     const id = req.params.id;
     const data = await Equipo.findByIdAndDelete(id);
