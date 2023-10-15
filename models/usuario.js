@@ -27,7 +27,7 @@ const DataSchema = new mongoose.Schema({
     type: Number,
   },
   admin: {
-    required: true,
+    required: false,
     type: Boolean,
   },
   email: {

@@ -1,5 +1,4 @@
 const Usuario = require("../models/usuario");
-const bcrypt = require("bcrypt");
 
 module.exports.register = async (req, res) => {
   const data = new Usuario({
@@ -9,7 +8,7 @@ module.exports.register = async (req, res) => {
     apellido: req.body.apellido,
     dni: req.body.dni,
     matricula: req.body.matricula,
-    admin: req.body.admin,
+    rol: req.body.rol,
     email: req.body.email,
     editor: req.body.editor,
   });
@@ -25,15 +24,16 @@ module.exports.register = async (req, res) => {
 module.exports.login = async (req, res) => {
   try {
     const { usuario, password } = req.body;
-    const contrasenia = Buffer.from(password, "base64").toString();
+    const pass = Buffer.from(password, "base64").toString();
     const user = await Usuario.findOne({
       usuario,
     });
-    const passValidated = await user.comparePassword(contrasenia);
+    const passValidated = await user.comparePassword(pass);
     if (!passValidated) {
       return res.status(401).json({ auth: "Fallo", token: null });
     }
-    return res.json(user);
+    let {contrasenia, admin, ...clean} = user._doc    
+    return res.json(clean);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
