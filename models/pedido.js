@@ -29,7 +29,7 @@ const dataSchema = new mongoose.Schema({
   },
   alumnos: {
     required: true,
-    type: Number, 
+    type: Number,
   },
   edificio: {
     type: String,
@@ -56,7 +56,7 @@ const dataSchema = new mongoose.Schema({
         type: Number,
       },
       equipo: { type: mongoose.Schema.Types.ObjectId, ref: "Equipo" },
-    }
+    },
   ],
   lista_reactivos: [
     {
@@ -88,7 +88,7 @@ const dataSchema = new mongoose.Schema({
         type: String,
       },
       reactivo: { type: mongoose.Schema.Types.ObjectId, ref: "Reactivo" },
-    }
+    },
   ],
   lista_materiales: [
     {
@@ -97,8 +97,8 @@ const dataSchema = new mongoose.Schema({
         type: Number,
       },
       material: { type: mongoose.Schema.Types.ObjectId, ref: "Material" },
-    }
-  ]
+    },
+  ],
 });
 
 module.exports = mongoose.model("Pedido", dataSchema);
