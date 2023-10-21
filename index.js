@@ -6,9 +6,11 @@ const materialRoute = require("./routes/material.route");
 const pedidoRoute = require("./routes/pedido.route");
 const reactivoRoute = require("./routes/reactivo.route");
 const userRoute = require("./routes/user.route");
-
 const express = require("express");
+
 const app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 const cors = require('cors');
 const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
@@ -35,6 +37,11 @@ app.use("/api/pedido", pedidoRoute);
 app.use("/api/reactivo", reactivoRoute);
 app.use("/api/usuario", userRoute);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server Started at ${process.env.PORT}`);
-});
+
+io.on('connection', () =>{
+  console.log('Un usuario esta conectado')
+})
+
+http.listen(process.env.PORT, () => {
+  console.log(`Server Started at ${process.env.PORT}`)
+ });
