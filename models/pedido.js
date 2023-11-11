@@ -103,15 +103,12 @@ const dataSchema = new mongoose.Schema({
     {
       id: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario" },
       nombre: {
-        required: true,
         type: String,
       },
       mensaje: {
-        required: true,
         type: String,
       },
       read: {
-        required: true,
         type: Boolean,
       },
     },
