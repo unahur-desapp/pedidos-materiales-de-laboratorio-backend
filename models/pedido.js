@@ -99,23 +99,6 @@ const dataSchema = new mongoose.Schema({
       material: { type: mongoose.Schema.Types.ObjectId, ref: "Material" },
     },
   ],
-  lista_mensajes: [
-    {
-      id: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario" },
-      nombre: {
-        required: true,
-        type: String,
-      },
-      mensaje: {
-        required: true,
-        type: String,
-      },
-      read: {
-        required: true,
-        type: Boolean,
-      },
-    },
-  ],
 });
 
 module.exports = mongoose.model("Pedido", dataSchema);
