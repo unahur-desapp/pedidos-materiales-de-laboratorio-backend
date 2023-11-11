@@ -6,6 +6,7 @@ const materialRoute = require("./routes/material.route");
 const pedidoRoute = require("./routes/pedido.route");
 const reactivoRoute = require("./routes/reactivo.route");
 const userRoute = require("./routes/user.route");
+const mailRoute = require("./routes/mail.route");
 const express = require("express");
 
 const app = express();
@@ -35,6 +36,7 @@ app.use("/api/material", materialRoute);
 app.use("/api/pedido", pedidoRoute);
 app.use("/api/reactivo", reactivoRoute);
 app.use("/api/usuario", userRoute);
+app.use("/api/mail", mailRoute);
 
 
 io.on('connection', (socket) => {
@@ -53,4 +55,4 @@ io.on('connection', (socket) => {
 
 http.listen(process.env.PORT, () => {
   console.log(`Server Started at ${process.env.PORT}`)
- });
+});
