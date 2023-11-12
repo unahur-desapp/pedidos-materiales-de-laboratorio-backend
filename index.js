@@ -6,10 +6,12 @@ const materialRoute = require("./routes/material.route");
 const pedidoRoute = require("./routes/pedido.route");
 const reactivoRoute = require("./routes/reactivo.route");
 const userRoute = require("./routes/user.route");
-
+const mailRoute = require("./routes/mail.route");
 const express = require("express");
-const app = express();
 
+const app = express();
+var http = require('http').Server(app);
+const io = require('socket.io')(http, {cors: {origin: "*"}});
 const cors = require('cors');
 const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
 app.use(cors({
@@ -34,7 +36,23 @@ app.use("/api/material", materialRoute);
 app.use("/api/pedido", pedidoRoute);
 app.use("/api/reactivo", reactivoRoute);
 app.use("/api/usuario", userRoute);
+app.use("/api/mail", mailRoute);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server Started at ${process.env.PORT}`);
+
+io.on('connection', (socket) => {
+  console.log('Se ha conectado un cliente');
+
+  socket.broadcast.emit('chat_message', {
+      usuario: 'INFO',
+      mensaje: 'Se ha conectado un nuevo usuario'
+  });
+
+  socket.on('chat_message', (data) => {
+      io.emit('chat_message', data);
+  });
+});
+
+
+http.listen(process.env.PORT, () => {
+  console.log(`Server Started at ${process.env.PORT}`)
 });

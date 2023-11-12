@@ -50,8 +50,7 @@ module.exports.updateUserById = async (req, res) => {
     const id = req.params.id;
     const updatedData = req.body;
     let { contrasenia, ...props } = updatedData;
-    contrasenia = Buffer.from(contrasenia, "base64").toString();
-    console.log(contrasenia);
+    contrasenia = Buffer.from(contrasenia, "base64").toString()
     const options = { new: true };
 
     let user = await Usuario.findById(id);
