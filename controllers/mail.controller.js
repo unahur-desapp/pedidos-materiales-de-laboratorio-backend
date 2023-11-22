@@ -12,8 +12,10 @@ module.exports.getMails = async (req, res) => {
 };
 
 module.exports.sendMail = async (req, res) => {
+    console.log(req.body) 
     try {
-        const updatedData = req.body;    
+        const updatedData = req.body;   
+        
         const data = new Mail(updatedData);  
         const dataToSave = await data.save();
         return res.status(200).json(dataToSave);
