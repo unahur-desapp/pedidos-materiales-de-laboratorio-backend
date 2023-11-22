@@ -4,7 +4,7 @@ const dataSchema = new mongoose.Schema({
   nombre: {
     type: String,
   },
-  id_remitente: {
+  id_emisor: {
     required: true,
     type: String,
   },
@@ -13,6 +13,9 @@ const dataSchema = new mongoose.Schema({
     type: String,
   },
   read: {
+    type: Boolean,
+  },
+  id_pedido: {
     type: Boolean,
   },
 });
