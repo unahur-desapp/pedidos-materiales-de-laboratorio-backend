@@ -55,16 +55,25 @@ app.use("/api/usuario", userRoute);
 app.use("/api/mail", mailRoute);
 
 
-io.on('connection', (socket) => {
-  socket.broadcast.emit('chat_message', {
-      usuario: 'INFO',
-      mensaje: 'Se ha conectado un nuevo usuario'
-  }
-  
-  );
+const chatRooms = {};
 
-  socket.on('chat_message', (data) => {
-      io.emit(data.id_pedido, data);
+io.on('connection', (socket) => {
+  console.log('Usuario conectado');
+
+  // Manejar conexión a una sala específica basada en el ID de pedido
+  socket.on('joinChat', (pedidoId) => {
+    socket.join(pedidoId);
+    io.to(pedidoId).emit('chatMessage', '¡Bienvenido al chat!');
+  });
+
+  // Manejar mensaje en una sala específica
+  socket.on('sendMessage', (pedidoId, message) => {
+    console.log(pedidoId)
+    io.to(pedidoId).emit('chatMessage', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Usuario desconectado');
   });
 });
 
