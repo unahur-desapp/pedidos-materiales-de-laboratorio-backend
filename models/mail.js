@@ -16,7 +16,7 @@ const dataSchema = new mongoose.Schema({
     type: Boolean,
   },
   id_pedido: {
-    type: Boolean,
+    type: String,
   },
 });
 
