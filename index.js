@@ -13,23 +13,20 @@ const app = express();
 
 const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
 
+const cors = require('cors');
 var http = require('http').Server(app);
 const io = require('socket.io')(http, {
-  handlePreflightRequest: (req, res) => {
-    res.writeHead(200, {
-      "Access-Control-Allow-Origin": whiteList,
-      "Access-Control-Allow-Methods": "GET,POST,DELETE,PATCH",
-      "Access-Control-Allow-Headers": "my-custom-header",
-      "Access-Control-Allow-Credentials": true
-    });
-    res.end();
+  cors:{
+    origin:whiteList,
+    methods: ['GET','POST','DELETE','PATCH'],
+    headers: "my-custom-header",
+    credentials: true
   },
   allowRequest: (req, callback) => {
     const noOriginHeader = req.headers.origin === undefined;
     callback(null, noOriginHeader);
   }
 });
-const cors = require('cors');
 app.use(cors({
     // usando funcion de callback no pueden entrar a los controladores
     origin: function(origin, callback){
