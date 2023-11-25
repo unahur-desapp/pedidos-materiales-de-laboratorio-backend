@@ -1,5 +1,5 @@
 require("dotenv").config();
-require('./database/connectDb'); 
+require('./database/connectDb');
 const authRoute = require("./routes/auth.route");
 const equipoRoute = require("./routes/equipo.route");
 const materialRoute = require("./routes/material.route");
@@ -15,33 +15,24 @@ const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
 
 var http = require('http').Server(app);
 const io = require('socket.io')(http, {
-  handlePreflightRequest: (req, res) => {
-    res.writeHead(200, {
-      "Access-Control-Allow-Origin": whiteList,
-      "Access-Control-Allow-Methods": "GET,POST,DELETE,PATCH",
-      "Access-Control-Allow-Headers": "my-custom-header",
-      "Access-Control-Allow-Credentials": true
-    });
-    res.end();
+  cors: {
+    origin: "http://localhost:3000", // Reemplaza con la URL de tu aplicación frontend
+    methods: ["GET", "POST"],
   },
-  allowRequest: (req, callback) => {
-    const noOriginHeader = req.headers.origin === undefined;
-    callback(null, noOriginHeader);
-  }
 });
+
 const cors = require('cors');
 app.use(cors({
-    // usando funcion de callback no pueden entrar a los controladores
-    origin: function(origin, callback){
-        if(!origin ||
-             whiteList //MODO TESTING
-             //whiteList.includes(origin) //MODO PRODUCCTION
-             ){
-                return callback(null, origin)
-        }
-        return callback('error de Cors ' + origin + " no autorizado!")
-    },
-    credentials:true
+  origin: function (origin, callback) {
+    if (!origin ||
+      whiteList //MODO TESTING
+      //whiteList.includes(origin) //MODO PRODUCCTION
+    ) {
+      return callback(null, origin)
+    }
+    return callback('error de Cors ' + origin + " no autorizado!")
+  },
+  credentials: true
 }))
 
 app.use(express.json());
@@ -54,7 +45,6 @@ app.use("/api/reactivo", reactivoRoute);
 app.use("/api/usuario", userRoute);
 app.use("/api/mail", mailRoute);
 
-
 const chatRooms = {};
 
 io.on('connection', (socket) => {
@@ -63,20 +53,19 @@ io.on('connection', (socket) => {
   // Manejar conexión a una sala específica basada en el ID de pedido
   socket.on('joinChat', (pedidoId) => {
     socket.join(pedidoId);
-    io.to(pedidoId).emit('chatMessage', '¡Bienvenido al chat!');
+
   });
 
   // Manejar mensaje en una sala específica
-  socket.on('sendMessage', (pedidoId, message) => {
+  socket.on('sendMessage', (pedidoId,rpta) => {
     console.log(pedidoId)
-    io.to(pedidoId).emit('chatMessage', message);
+    io.to(pedidoId).emit('chatMessage',rpta);
   });
 
   socket.on('disconnect', () => {
     console.log('Usuario desconectado');
   });
 });
-
 
 http.listen(process.env.PORT, () => {
   console.log(`Server Started at ${process.env.PORT}`)
