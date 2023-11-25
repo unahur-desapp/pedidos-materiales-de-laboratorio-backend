@@ -16,15 +16,9 @@ const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
 const cors = require('cors');
 var http = require('http').Server(app);
 const io = require('socket.io')(http, {
-  cors:{
-    origin:whiteList,
-    methods: ['GET','POST','DELETE','PATCH'],
-    headers: "my-custom-header",
-    credentials: true
-  },
-  allowRequest: (req, callback) => {
-    const noOriginHeader = req.headers.origin === undefined;
-    callback(null, noOriginHeader);
+  cors: {
+    origin: "http://localhost:3000", // Reemplaza con la URL de tu aplicación frontend
+    methods: ["GET", "POST"],
   }
 });
 
@@ -61,7 +55,7 @@ io.on('connection', (socket) => {
   // Manejar conexión a una sala específica basada en el ID de pedido
   socket.on('joinChat', (pedidoId) => {
     socket.join(pedidoId);
-    io.to(pedidoId).emit('chatMessage', '¡Bienvenido al chat!');
+   
   });
 
   // Manejar mensaje en una sala específica
