@@ -27,6 +27,7 @@ const io = require('socket.io')(http, {
     callback(null, noOriginHeader);
   }
 });
+
 app.use(cors({
     // usando funcion de callback no pueden entrar a los controladores
     origin: function(origin, callback){
