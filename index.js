@@ -17,7 +17,15 @@ const cors = require('cors');
 var http = require('http').Server(app);
 const io = require('socket.io')(http, {
   cors: {
-    origin: "http://localhost:3000", // Reemplaza con la URL de tu aplicación frontend
+    origin: function(origin, callback){
+      if(!origin ||
+           whiteList //MODO TESTING
+           //whiteList.includes(origin) //MODO PRODUCCTION
+           ){
+              return callback(null, origin)
+      }
+      return callback('error de Cors ' + origin + " no autorizado!")
+    }, // Reemplaza con la URL de tu aplicación frontend
     methods: ["GET", "POST"],
   }
 });
