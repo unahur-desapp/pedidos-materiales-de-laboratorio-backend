@@ -18,6 +18,16 @@ module.exports.getUserById = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+module.exports.getAdminById = async (req, res) => {
+  try {
+    const user = await Usuario.findById(req.params.id);
+    let { admin} = user._doc    
+    return res.json(admin);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 module.exports.getUser = async (req, res) => {
   const buscar = req.query.buscar;
   try {
