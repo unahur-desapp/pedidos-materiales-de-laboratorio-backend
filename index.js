@@ -26,7 +26,7 @@ const io = require('socket.io')(http, {
       }
       return callback('error de Cors ' + origin + " no autorizado!")
     }, // Reemplaza con la URL de tu aplicación frontend
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST","PUT"],
   }
 });
 
