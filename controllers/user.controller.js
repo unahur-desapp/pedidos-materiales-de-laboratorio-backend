@@ -13,7 +13,8 @@ module.exports.getUsers = async (req, res) => {
 module.exports.getUserById = async (req, res) => {
   try {
     const data = await Usuario.findById(req.params.id);
-    return res.json(data);
+    const {dni, matricula} = data
+    return res.json({dni, matricula});
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

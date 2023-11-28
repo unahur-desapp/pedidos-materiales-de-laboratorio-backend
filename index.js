@@ -13,36 +13,23 @@ const app = express();
 
 const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
 
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || whiteList.includes(origin)) {
+      callback(null, origin);
+    } else {
+      callback(new Error('Error de CORS: Origin no autorizado'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT'],
+  credentials: true,
+};
 const cors = require('cors');
 var http = require('http').Server(app);
 const io = require('socket.io')(http, {
-  cors: {
-    origin: function(origin, callback){
-      if(!origin ||
-           whiteList //MODO TESTING
-           //whiteList.includes(origin) //MODO PRODUCCTION
-           ){
-              return callback(null, origin)
-      }
-      return callback('error de Cors ' + origin + " no autorizado!")
-    }, // Reemplaza con la URL de tu aplicación frontend
-    methods: ["GET", "POST","PUT"],
-  }
+  cors: corsOptions
 });
-
-app.use(cors({
-    // usando funcion de callback no pueden entrar a los controladores
-    origin: function(origin, callback){
-        if(!origin ||
-             whiteList //MODO TESTING
-             //whiteList.includes(origin) //MODO PRODUCCTION
-             ){
-                return callback(null, origin)
-        }
-        return callback('error de Cors ' + origin + " no autorizado!")
-    },
-    credentials:true
-}))
+app.use(cors(corsOptions))
 
 app.use(express.json());
 

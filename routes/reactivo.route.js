@@ -7,13 +7,14 @@ const {
   updateReactivoById,
   deleteReactivoById,
 } = require("../controllers/reactivo.controller");
+const verifyToken = require("../middleware/VerifyToken");
 const router = express.Router();
 
-router.post("/post", crearReactivo);
-router.get("/", getReactivo);
-router.get("/getAll", getReactivos);
-router.get("/getOne/:id", getReactivosById);
-router.patch("/update/:id", updateReactivoById);
-router.delete("/delete/:id", deleteReactivoById);
+router.post("/post",verifyToken , crearReactivo);
+router.get("/",verifyToken , getReactivo);
+router.get("/getAll",verifyToken ,getReactivos);
+router.get("/getOne/:id",verifyToken ,getReactivosById);
+router.patch("/update/:id",verifyToken ,updateReactivoById);
+router.delete("/delete/:id",verifyToken ,deleteReactivoById);
 
 module.exports = router;
