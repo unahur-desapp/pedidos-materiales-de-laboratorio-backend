@@ -21,7 +21,7 @@ const corsOptions = {
       callback(new Error('Error de CORS: Origin no autorizado'));
     }
   },
-  methods: ['GET', 'POST', 'PUT'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true,
 };
 const cors = require('cors');
