@@ -5,7 +5,9 @@ module.exports.crearEquipo = async (req, res) => {
     clase: req.body.clase,
     descripcion: req.body.descripcion,
     stock: req.body.stock,
-    unidadMedida: req.body.unidadMedida,
+    unidadMedida: req.body.unidadMedida,    
+    enUso: [],
+    enReparacion: 0
   });
 
   try {

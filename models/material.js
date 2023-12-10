@@ -18,6 +18,25 @@ const dataSchema = new mongoose.Schema({
     required: true,
     type: Number,
   },
+  enUso: [
+    {
+      id: {
+        type: String,
+      },
+      fecha_inicio: {
+        type: Date,
+      },
+      fecha_fin: {
+        type: Date,
+      },
+      cantidad: {
+        type: Number,
+      },
+    },
+  ],
+  enReparacion: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model("Material", dataSchema);

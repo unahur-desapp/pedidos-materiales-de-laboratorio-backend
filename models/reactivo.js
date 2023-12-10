@@ -12,6 +12,9 @@ const dataSchema = new mongoose.Schema({
   stock: {
     type: Number,
   },
+  enUso: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model("Reactivo", dataSchema);

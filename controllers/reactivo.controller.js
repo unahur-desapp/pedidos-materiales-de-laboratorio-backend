@@ -7,6 +7,7 @@ module.exports.crearReactivo = async (req, res) => {
     cas: req.body.cas,
     descripcion: req.body.descripcion,
     stock: req.body.stock,
+    enReparacion: 0
   });
 
   try {

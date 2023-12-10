@@ -8,6 +8,8 @@ module.exports.crearMaterial = async (req, res) => {
     descripcion: req.body.descripcion,
     stock: req.body.stock,
     unidadMedida: req.body.unidadMedida,
+    enUso: [],
+    enReparacion: 0
   });
 
   try {
