@@ -20,7 +20,6 @@ const dataSchema = new mongoose.Schema({
     type: Date,
   },
   numero_laboratorio: {
-    required: true,
     type: Number,
   },
   tipo_pedido: {
