@@ -6,23 +6,8 @@ const Material = require("../models/material");
 //Verbos para pedidos
 //Post de un pedido
 module.exports.postPedido = async (req, res) => {
-  const data = new Pedido({
-    docente: req.body.docente,
-    numero_tp: req.body.numero_tp,
-    fecha_solicitud: req.body.fecha_solicitud,
-    fecha_utilizacion: req.body.fecha_utilizacion,
-    edificio: "",
-    numero_laboratorio: "",
-    tipo_pedido: "PENDIENTE",
-    alumnos: req.body.alumnos,
-    materia: req.body.materia,
-    cantidad_grupos: req.body.cantidad_grupos,
-    lista_equipos: req.body.lista_equipos,
-    lista_reactivos: req.body.lista_reactivos,
-    lista_materiales: req.body.lista_materiales,
-    descripcion: req.body.descripcion,
-    observaciones: req.body.observaciones,
-  });
+  const {equipos_update, materiales_update, reactivos_update, ...pedido} = req.body
+  const data = new Pedido(pedido);
   try {
     req.body.lista_equipos.map(async e => {
       if (req.body.equipos_update.some(i => i._id === e.equipo)) {
