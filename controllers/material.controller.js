@@ -33,7 +33,7 @@ module.exports.getMaterial = async (req, res) => {
       };
     }
 
-    const materiales = await Material.find(consulta);
+    const materiales = await Material.find(consulta).sort({ clase: 'asc', descripcion: 'asc' });
 
     return res.json(materiales);
   } catch (error) {

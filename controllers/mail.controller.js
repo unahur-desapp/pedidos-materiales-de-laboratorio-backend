@@ -12,7 +12,6 @@ module.exports.getMails = async (req, res) => {
 };
 
 module.exports.sendMail = async (req, res) => {
-    //console.log(req.body) 
     try {
         const id = req.body.id_pedido;
         const mail = req.body.mail;
@@ -31,7 +30,6 @@ module.exports.sendMail = async (req, res) => {
     }
   };
   module.exports.updateMails =async (req, res) => {
-    //console.log(req.body) 
     try {
         const id = req.body._id;
         const listMens = {list_mensajes:req.body.list_mensajes};

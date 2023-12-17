@@ -34,7 +34,7 @@ module.exports.getReactivo = async (req, res) => {
       };
     }
 
-    const reactivos = await Reactivo.find(consulta);
+    const reactivos = await Reactivo.find(consulta).sort({ clase: 'asc', descripcion: 'asc' });
 
     return res.json(reactivos);
   } catch (error) {

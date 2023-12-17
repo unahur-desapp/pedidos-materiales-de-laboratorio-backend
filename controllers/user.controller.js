@@ -48,7 +48,7 @@ module.exports.getUser = async (req, res) => {
       }
     }
 
-    const usuarios = await Usuario.find(consulta);
+    const usuarios = await Usuario.find(consulta).sort({ descripcion: 'asc' });;
 
     return res.json(usuarios);
   } catch (error) {
