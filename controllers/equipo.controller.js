@@ -5,7 +5,9 @@ module.exports.crearEquipo = async (req, res) => {
     clase: req.body.clase,
     descripcion: req.body.descripcion,
     stock: req.body.stock,
-    unidadMedida: req.body.unidadMedida,
+    unidadMedida: req.body.unidadMedida,    
+    enUso: [],
+    enReparacion: 0
   });
 
   try {
@@ -18,7 +20,6 @@ module.exports.crearEquipo = async (req, res) => {
 
 module.exports.getEquipo = async (req, res) => {
   const buscar = req.query.buscar;
-
   try {
     let consulta = {
       equipo: { $regex: buscar, $options: "i" },
@@ -30,8 +31,7 @@ module.exports.getEquipo = async (req, res) => {
       };
     }
 
-    const equipos = await Equipo.find(consulta);
-
+    const equipos = await Equipo.find(consulta).sort({ clase: 'asc', descripcion: 'asc' });
     return res.json(equipos);
   } catch (error) {
     return res.status(500).json({ message: error.message });

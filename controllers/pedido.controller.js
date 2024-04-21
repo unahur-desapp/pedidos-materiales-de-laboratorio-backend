@@ -1,27 +1,50 @@
 const Pedido = require("../models/pedido");
+const Equipo = require("../models/equipo");
+const Reactivo = require("../models/reactivo");
+const Material = require("../models/material");
 
 //Verbos para pedidos
 //Post de un pedido
 module.exports.postPedido = async (req, res) => {
-  const data = new Pedido({
-    docente: req.body.docente,
-    descripcion: req.body.descripcion,
-    fecha_solicitud: req.body.fecha_solicitud,
-    fecha_utilizacion: req.body.fecha_utilizacion,
-    numero_laboratorio: req.body.numero_laboratorio,
-    tipo_pedido: req.body.tipo_pedido,
-    alumnos: req.body.alumnos,
-    edificio: req.body.edificio,
-    cantidad_grupos: req.body.cantidad_grupos,
-    observaciones: req.body.observaciones,
-    materia: req.body.materia,
-    numero_tp: req.body.numero_tp,
-    lista_equipos: req.body.lista_equipos,
-    lista_reactivos: req.body.lista_reactivos,
-    lista_materiales: req.body.lista_materiales,
-  });
-
+  const {equipos_update, materiales_update, reactivos_update, ...pedido} = req.body
+  const data = new Pedido(pedido);
   try {
+    req.body.lista_equipos.map(async e => {
+      if (req.body.equipos_update.some(i => i._id === e.equipo)) {
+        const toUpdate = req.body.equipos_update.find(i => i._id === e.equipo);
+        const { enUso } = toUpdate
+        const options = { new: true };
+        try {
+          await Equipo.findByIdAndUpdate(e.equipo, { $set: { enUso } }, options);
+        } catch (error) {
+          console.error(`Error al actualizar el equipo: ${e.equipo}`, error);
+        }
+      }
+    }); 
+    req.body.lista_materiales.map(async e => {
+      if (req.body.materiales_update.some(i => i._id === e.material)) {
+        const toUpdate = req.body.materiales_update.find(i => i._id === e.material);
+        const { enUso } = toUpdate
+        const options = { new: true };
+        try {
+          await Material.findByIdAndUpdate(e.material, { $set: { enUso } }, options);
+        } catch (error) {
+          console.error(`Error al actualizar el equipo: ${e.material}`, error);
+        }
+      }
+    }); 
+    req.body.lista_reactivos.map(async e => {
+      if (req.body.reactivos_update.some(i => i._id === e.reactivo)) {
+        const toUpdate = req.body.reactivos_update.find(i => i._id === e.reactivo);
+        const { enUso } = toUpdate
+        const options = { new: true };
+        try {
+          await Reactivo.findByIdAndUpdate(e.reactivo, { $set: { enUso } }, options);
+        } catch (error) {
+          console.error(`Error al actualizar el equipo: ${e.reactivo}`, error);
+        }
+      }
+    }); 
     const dataToSave = await data.save();
     return res.status(200).json(dataToSave);
   } catch (error) {

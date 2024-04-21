@@ -17,6 +17,25 @@ const dataSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
+  enUso: [
+    {
+      id: {
+        type: String,
+      },
+      fecha_inicio: {
+        type: Date,
+      },
+      fecha_fin: {
+        type: Date,
+      },
+      cantidad: {
+        type: Number,
+      },
+    },
+  ],
+  enReparacion: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model("Equipo", dataSchema);

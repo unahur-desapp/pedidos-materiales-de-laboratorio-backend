@@ -8,6 +8,8 @@ module.exports.crearMaterial = async (req, res) => {
     descripcion: req.body.descripcion,
     stock: req.body.stock,
     unidadMedida: req.body.unidadMedida,
+    enUso: [],
+    enReparacion: 0
   });
 
   try {
@@ -31,7 +33,7 @@ module.exports.getMaterial = async (req, res) => {
       };
     }
 
-    const materiales = await Material.find(consulta);
+    const materiales = await Material.find(consulta).sort({ clase: 'asc', descripcion: 'asc' });
 
     return res.json(materiales);
   } catch (error) {

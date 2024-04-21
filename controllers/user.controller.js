@@ -13,7 +13,18 @@ module.exports.getUsers = async (req, res) => {
 module.exports.getUserById = async (req, res) => {
   try {
     const data = await Usuario.findById(req.params.id);
-    return res.json(data);
+    const {dni, matricula} = data
+    return res.json({dni, matricula});
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports.getAdminById = async (req, res) => {
+  try {
+    const user = await Usuario.findById(req.params.id);
+    let { admin} = user._doc    
+    return res.json(admin);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -37,7 +48,7 @@ module.exports.getUser = async (req, res) => {
       }
     }
 
-    const usuarios = await Usuario.find(consulta);
+    const usuarios = await Usuario.find(consulta).sort({ descripcion: 'asc' });;
 
     return res.json(usuarios);
   } catch (error) {

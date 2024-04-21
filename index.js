@@ -10,23 +10,26 @@ const mailRoute = require("./routes/mail.route");
 const express = require("express");
 
 const app = express();
-var http = require('http').Server(app);
-const io = require('socket.io')(http, {cors: {origin: "*"}});
-const cors = require('cors');
+
 const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
-app.use(cors({
-    // usando funcion de callback no pueden entrar a los controladores
-    origin: function(origin, callback){
-        if(!origin ||
-             whiteList //MODO TESTING
-             //whiteList.includes(origin) //MODO PRODUCCTION
-             ){
-                return callback(null, origin)
-        }
-        return callback('error de Cors ' + origin + " no autorizado!")
-    },
-    credentials:true
-}))
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || whiteList.includes(origin)) {
+      callback(null, origin);
+    } else {
+      callback(new Error('Error de CORS: Origin no autorizado'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  credentials: true,
+};
+const cors = require('cors');
+var http = require('http').Server(app);
+const io = require('socket.io')(http, {
+  cors: corsOptions
+});
+app.use(cors(corsOptions))
 
 app.use(express.json());
 
@@ -39,16 +42,25 @@ app.use("/api/usuario", userRoute);
 app.use("/api/mail", mailRoute);
 
 
-io.on('connection', (socket) => {
-  console.log('Se ha conectado un cliente');
+const chatRooms = {};
 
-  socket.broadcast.emit('chat_message', {
-      usuario: 'INFO',
-      mensaje: 'Se ha conectado un nuevo usuario'
+io.on('connection', (socket) => {
+  console.log('Usuario conectado');
+
+  // Manejar conexión a una sala específica basada en el ID de pedido
+  socket.on('joinChat', (pedidoId) => {
+    socket.join(pedidoId);
+   
   });
 
-  socket.on('chat_message', (data) => {
-      io.emit('chat_message', data);
+  // Manejar mensaje en una sala específica
+  socket.on('sendMessage', (pedidoId, message) => {
+    console.log(pedidoId)
+    io.to(pedidoId).emit('chatMessage', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Usuario desconectado');
   });
 });
 
