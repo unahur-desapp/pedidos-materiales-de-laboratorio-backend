@@ -2,6 +2,7 @@ const Pedido = require("../models/pedido");
 const Equipo = require("../models/equipo");
 const Reactivo = require("../models/reactivo");
 const Material = require("../models/material");
+const updateValidate = require('../common/updateValidity');
 
 //Verbos para pedidos
 //Post de un pedido
@@ -53,22 +54,36 @@ module.exports.postPedido = async (req, res) => {
 };
 
 module.exports.getPedidos = async (req, res) => {
+  await updateValidate();
+  const validsOnly = req.params.validsOnly;
+
   try {
-    const data = await Pedido.find()
-      .populate({
+    const data = async () => {
+      if (!validsOnly) {
+        return await Pedido.find();
+      } else {
+        return await Pedido.find({ vigente: true });
+      }
+    };
+
+    const pedidos = await data();
+
+    const populatedPedidos = await Pedido.populate(pedidos, [
+      {
         path: "lista_equipos.equipo",
-        select: "descripcion clase ",
-      })
-      .populate({
+        select: "descripcion clase",
+      },
+      {
         path: "lista_materiales.material",
         select: "descripcion clase",
-      })
-      .populate({
+      },
+      {
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
-      });
-
-    return res.json(data);
+      },
+    ]);
+    
+    return res.json(populatedPedidos);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
