@@ -2,7 +2,7 @@ const Pedido = require("../models/pedido");
 const Equipo = require("../models/equipo");
 const Reactivo = require("../models/reactivo");
 const Material = require("../models/material");
-const updateValidate = require('../common/updateValidity');
+const dailyUpdate = require('../common/dailyValidityCheck');
 
 //Verbos para pedidos
 //Post de un pedido
@@ -54,7 +54,7 @@ module.exports.postPedido = async (req, res) => {
 };
 
 module.exports.getPedidos = async (req, res) => {
-  await updateValidate();
+  await startDailyUpdate();
   const validsOnly = req.params.validsOnly;
 
   try {
@@ -88,7 +88,25 @@ module.exports.getPedidos = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+async function startDailyUpdate() {
+  // Inicia la tarea cron
+  dailyUpdate.start();
 
+  // Retornar una nueva promesa
+  return new Promise((resolve, reject) => {
+      // Manejar el evento 'start'
+      dailyUpdate.on('start', () => {
+          console.log('Tarea cron iniciada correctamente');
+          resolve(); // Resuelve la promesa cuando la tarea cron se inicia
+      });
+
+      // Manejar el evento 'error'
+      dailyUpdate.on('error', (error) => {
+          console.error('Error al iniciar la tarea cron:', error);
+          reject(error); // Rechaza la promesa si hay un error al iniciar la tarea cron
+      });
+  });
+}
 //Get All by dni docente
 module.exports.getPedidosByDni = async (req, res) => {
   try {
