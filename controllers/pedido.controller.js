@@ -54,7 +54,7 @@ module.exports.postPedido = async (req, res) => {
 };
 
 module.exports.getPedidos = async (req, res) => {
-  await startDailyUpdate();
+  //await startDailyUpdate();
   const validsOnly = req.params.validsOnly;
 
   try {
@@ -65,9 +65,9 @@ module.exports.getPedidos = async (req, res) => {
         return await Pedido.find({ vigente: true });
       }
     };
-
+    console.log("object")
     const pedidos = await data();
-
+    
     const populatedPedidos = await Pedido.populate(pedidos, [
       {
         path: "lista_equipos.equipo",
@@ -181,7 +181,7 @@ module.exports.getPedidosByDate = async (req, res) => {
 module.exports.getPedidosByDates = async (req, res) => {
   const { fecha_utilizacion, tipo_pedido, fecha_inicio, fecha_fin, edificio } =
     req.query;
-
+    
   try {
     let query = {};
 
@@ -215,6 +215,8 @@ module.exports.getPedidosByDates = async (req, res) => {
     if (edificio) {
       query.edificio = edificio;
     }
+    const count = await Pedido.countDocuments(query)
+    console.log(count)
     const pedidos = await Pedido.find(query)
       .populate({
         path: "lista_equipos.equipo",
