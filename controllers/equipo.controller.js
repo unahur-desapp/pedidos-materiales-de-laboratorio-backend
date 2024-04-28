@@ -40,7 +40,7 @@ module.exports.getEquipo = async (req, res) => {
 //Get All
 module.exports.getEquipos = async (req, res) => {
   try {
-    const data = await Equipo.find();
+    const data = await Equipo.find({ disponible: true });
     return res.json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });

@@ -15,6 +15,11 @@ const dataSchema = new mongoose.Schema({
   enUso: {
     type: Number,
   },
+  disponible: {
+    required: true,
+    type: Boolean,
+    default: true
+  },
 });
 
 module.exports = mongoose.model("Reactivo", dataSchema);
