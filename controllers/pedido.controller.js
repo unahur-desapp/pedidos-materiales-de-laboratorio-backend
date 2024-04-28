@@ -124,8 +124,9 @@ module.exports.getPedidosByDni = async (req, res) => {
       .populate({
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
-      });
-    data.reverse();
+      })
+      .sort({ fecha_utilizacion: -1 });
+    
     return res.json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -172,8 +173,9 @@ module.exports.getPedidosByDate = async (req, res) => {
       .populate({
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
-      });
-    data.reverse();
+      })
+      .sort({ fecha_utilizacion: -1 });
+
     return res.json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
