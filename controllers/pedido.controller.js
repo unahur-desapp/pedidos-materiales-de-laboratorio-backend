@@ -174,7 +174,6 @@ module.exports.getPedidosByDate = async (req, res) => {
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
       })
-      .sort({ fecha_utilizacion: -1 });
 
     return res.json(data);
   } catch (error) {
@@ -233,7 +232,8 @@ module.exports.getPedidosByDates = async (req, res) => {
       .populate({
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
-      });
+      })
+      .sort({ fecha_utilizacion: -1 });
 
     return res.json(pedidos);
   } catch (err) {
