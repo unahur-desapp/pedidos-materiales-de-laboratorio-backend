@@ -9,6 +9,7 @@ const {
   getPedidosById,
   updatePedidoById,
   deletePedidoById,
+  countPedidos,
 } = require("../controllers/pedido.controller");
 const verifyToken = require("../middleware/VerifyToken");
 const router = express.Router();
