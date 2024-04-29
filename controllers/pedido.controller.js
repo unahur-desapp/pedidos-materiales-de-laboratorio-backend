@@ -65,7 +65,6 @@ module.exports.getPedidos = async (req, res) => {
         return await Pedido.find({ vigente: true });
       }
     };
-    console.log("object")
     const pedidos = await data();
     
     const populatedPedidos = await Pedido.populate(pedidos, [
@@ -283,8 +282,10 @@ module.exports.deletePedidoById = async (req, res) => {
 
 module.exports.countPedidos = async (req, res) => {
   try {
+    console.log("1")
     const count = await Pedido.countDocuments({});
-    return res.send(count);
+    console.log(count)
+    return res.json({ count });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
