@@ -22,5 +22,6 @@ router.get("/",verifyToken ,getPedidosByDates);
 router.get("/getOne/:id",verifyToken ,getPedidosById);
 router.patch("/update/:id",verifyToken ,updatePedidoById);
 router.delete("/delete/:id",verifyToken ,deletePedidoById);
+router.get("/count",verifyToken ,countPedidos);
 
 module.exports = router;
