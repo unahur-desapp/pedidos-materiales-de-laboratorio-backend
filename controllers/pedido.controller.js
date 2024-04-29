@@ -106,6 +106,7 @@ async function startDailyUpdate() {
       });
   });
 }
+//Get All by dni docente
 module.exports.getPedidosByDni = async (req, res) => {
   try {
     const dni = req.params.dni;
@@ -181,8 +182,7 @@ module.exports.getPedidosByDate = async (req, res) => {
       .populate({
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
-      })
-
+      });
     return res.json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -255,7 +255,6 @@ module.exports.getPedidosByDates = async (req, res) => {
   }
 };
 
-
 //Get por id
 
 module.exports.getPedidosById = async (req, res) => {
@@ -296,13 +295,3 @@ module.exports.deletePedidoById = async (req, res) => {
   }
 };
 
-module.exports.countPedidos = async (req, res) => {
-  try {
-    console.log("1")
-    const count = await Pedido.countDocuments({});
-    console.log(count)
-    return res.json({ count });
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
-};
