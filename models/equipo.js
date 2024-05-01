@@ -36,6 +36,11 @@ const dataSchema = new mongoose.Schema({
   enReparacion: {
     type: Number,
   },
+  disponible: {
+    required: true,
+    type: Boolean,
+    default: true
+  },
 });
 
 module.exports = mongoose.model("Equipo", dataSchema);

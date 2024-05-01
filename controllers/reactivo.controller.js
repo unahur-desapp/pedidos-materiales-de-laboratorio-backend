@@ -45,7 +45,7 @@ module.exports.getReactivo = async (req, res) => {
 //Get All
 module.exports.getReactivos = async (req, res) => {
   try {
-    const data = await Reactivo.find();
+    const data = await Reactivo.find({ disponible: true });
     return res.json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });

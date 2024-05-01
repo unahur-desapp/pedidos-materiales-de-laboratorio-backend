@@ -65,7 +65,6 @@ module.exports.getPedidos = async (req, res) => {
         return await Pedido.find({ vigente: true });
       }
     };
-    console.log("object")
     const pedidos = await data();
     
     const populatedPedidos = await Pedido.populate(pedidos, [
@@ -124,7 +123,9 @@ module.exports.getPedidosByDni = async (req, res) => {
       .populate({
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
-      });
+      })
+      .sort({ fecha_utilizacion: -1 });
+    
     return res.json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -171,7 +172,8 @@ module.exports.getPedidosByDate = async (req, res) => {
       .populate({
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
-      });
+      })
+
     return res.json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -229,7 +231,8 @@ module.exports.getPedidosByDates = async (req, res) => {
       .populate({
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
-      });
+      })
+      .sort({ fecha_utilizacion: -1 });
 
     return res.json(pedidos);
   } catch (err) {
@@ -277,3 +280,13 @@ module.exports.deletePedidoById = async (req, res) => {
   }
 };
 
+module.exports.countPedidos = async (req, res) => {
+  try {
+    console.log("1")
+    const count = await Pedido.countDocuments({});
+    console.log(count)
+    return res.json({ count });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};

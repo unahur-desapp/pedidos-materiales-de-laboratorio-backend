@@ -102,7 +102,7 @@ const dataSchema = new mongoose.Schema({
     required: true,
     type: Boolean,
     default: true
-  }
+  },
 });
 
 module.exports = mongoose.model("Pedido", dataSchema);
