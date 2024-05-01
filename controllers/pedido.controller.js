@@ -110,6 +110,9 @@ async function startDailyUpdate() {
 module.exports.getPedidosByDni = async (req, res) => {
   try {
     const dni = req.params.dni;
+    const page = req.params.page;
+    const perPage = 8;
+    const totalCount = await Pedido.countDocuments({ "docente.dni": dni }); // Obtener el total de documentos que coinciden con la consulta
 
     const data = await Pedido.find({ "docente.dni": dni })
       .populate({
@@ -124,9 +127,16 @@ module.exports.getPedidosByDni = async (req, res) => {
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
       })
-      .sort({ fecha_utilizacion: -1 });
-    
-    return res.json(data);
+      .skip((page - 1) * perPage) // Saltar los documentos según la página solicitada
+      .limit(perPage); // Limitar la cantidad de documentos por página
+
+    return res.json({
+      totalCount,
+      currentPage: parseInt(page),
+      perPage: parseInt(perPage),
+      totalPages: Math.ceil(totalCount / perPage),
+      data,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -172,8 +182,7 @@ module.exports.getPedidosByDate = async (req, res) => {
       .populate({
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
-      })
-
+      });
     return res.json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -181,9 +190,8 @@ module.exports.getPedidosByDate = async (req, res) => {
 };
 
 module.exports.getPedidosByDates = async (req, res) => {
-  const { fecha_utilizacion, tipo_pedido, fecha_inicio, fecha_fin, edificio } =
-    req.query;
-    
+  const { fecha_utilizacion, tipo_pedido, fecha_inicio, fecha_fin, edificio, page, perPage = 8 } = req.query;
+
   try {
     let query = {};
 
@@ -191,7 +199,6 @@ module.exports.getPedidosByDates = async (req, res) => {
       const fechaUtilizacionStart = new Date(fecha_utilizacion);
       fechaUtilizacionStart.setUTCHours(0, 0, 0, 0);
       const fechaUtilizacionEnd = new Date(fecha_utilizacion);
-
       fechaUtilizacionEnd.setUTCHours(23, 59, 59, 999);
 
       query.fecha_utilizacion = {
@@ -217,8 +224,9 @@ module.exports.getPedidosByDates = async (req, res) => {
     if (edificio) {
       query.edificio = edificio;
     }
-    const count = await Pedido.countDocuments(query)
-    console.log(count)
+
+    const totalCount = await Pedido.countDocuments(query); // Obtener el total de documentos que coinciden con la consulta
+
     const pedidos = await Pedido.find(query)
       .populate({
         path: "lista_equipos.equipo",
@@ -232,9 +240,16 @@ module.exports.getPedidosByDates = async (req, res) => {
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
       })
-      .sort({ fecha_utilizacion: -1 });
+      .skip((page - 1) * perPage) // Saltar los documentos según la página solicitada
+      .limit(perPage); // Limitar la cantidad de documentos por página
 
-    return res.json(pedidos);
+    return res.json({
+      totalCount,
+      currentPage: parseInt(page),
+      perPage: parseInt(perPage),
+      totalPages: Math.ceil(totalCount / perPage),
+      data: pedidos,
+    });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
