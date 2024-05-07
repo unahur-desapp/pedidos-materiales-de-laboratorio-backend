@@ -227,40 +227,26 @@ module.exports.getPedidosByDates = async (req, res) => {
 
     const totalCount = await Pedido.countDocuments(query); // Obtener el total de documentos que coinciden con la consulta
     const validsOnly = req.params.validsOnly;
+    let response;
     if (!validsOnly) {
-      return await Pedido.find(query)
-      .populate({
-        path: "lista_equipos.equipo",
-        select: "descripcion clase",
-      })
-      .populate({
-        path: "lista_materiales.material",
-        select: "descripcion clase",
-      })
-      .populate({
-        path: "lista_reactivos.reactivo",
-        select: "descripcion cas",
-      })
-      .skip((page - 1) * perPage) // Saltar los documentos según la página solicitada
-      .limit(perPage); // Limitar la cantidad de documentos por página
+       response = await Pedido.find(query)
     } else {
-      return await Pedido.find(query, { vigente: true })
-      .populate({
-        path: "lista_equipos.equipo",
-        select: "descripcion clase",
-      })
-      .populate({
-        path: "lista_materiales.material",
-        select: "descripcion clase",
-      })
-      .populate({
-        path: "lista_reactivos.reactivo",
-        select: "descripcion cas",
-      })
-      .skip((page - 1) * perPage) // Saltar los documentos según la página solicitada
-      .limit(perPage); // Limitar la cantidad de documentos por página
+      response = await Pedido.find(query, { vigente: true })
     }
-
+    return response.populate({
+      path: "lista_equipos.equipo",
+      select: "descripcion clase",
+    })
+    .populate({
+      path: "lista_materiales.material",
+      select: "descripcion clase",
+    })
+    .populate({
+      path: "lista_reactivos.reactivo",
+      select: "descripcion cas",
+    })
+    .skip((page - 1) * perPage) // Saltar los documentos según la página solicitada
+    .limit(perPage); // Limitar la cantidad de documentos por página
 
     return res.json({
       totalCount,
