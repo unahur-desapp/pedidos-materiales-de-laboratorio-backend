@@ -191,7 +191,7 @@ module.exports.getPedidosByDate = async (req, res) => {
 
 module.exports.getPedidosByDates = async (req, res) => {
   const { fecha_utilizacion, tipo_pedido, fecha_inicio, fecha_fin, edificio, page, perPage = 8 } = req.query;
-
+  
   try {
     let query = {};
 
@@ -240,7 +240,8 @@ module.exports.getPedidosByDates = async (req, res) => {
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
       })
-      .skip((page - 1) * perPage) // Saltar los documentos según la página solicitada
+      .sort({fecha_utilizacion: -1})
+      .skip((parseInt(page) - 1) * perPage) // Saltar los documentos según la página solicitada
       .limit(perPage); // Limitar la cantidad de documentos por página
 
     return res.json({
