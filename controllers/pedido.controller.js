@@ -140,7 +140,6 @@ module.exports.getPedidosByDni = async (req, res) => {
   } = req.query;
   let query = {};
   try {
-    //query.docente = {dni}
     if (fecha_utilizacion) {
       const fechaUtilizacionStart = new Date(fecha_utilizacion);
       fechaUtilizacionStart.setUTCHours(0, 0, 0, 0);
@@ -190,7 +189,7 @@ module.exports.getPedidosByDni = async (req, res) => {
       })
       .skip((page - 1) * perPage) // Saltar los documentos según la página solicitada
       .limit(perPage); // Limitar la cantidad de documentos por página
-      console.log(data)
+
     return res.json({
       totalCount,
       currentPage: parseInt(page),
