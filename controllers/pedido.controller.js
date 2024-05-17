@@ -140,7 +140,7 @@ module.exports.getPedidosByDni = async (req, res) => {
   } = req.query;
   let query = {};
   try {
-    query.docente.dni = dni;
+    //query.docente.dni = dni;
     if (fecha_utilizacion) {
       const fechaUtilizacionStart = new Date(fecha_utilizacion);
       fechaUtilizacionStart.setUTCHours(0, 0, 0, 0);
@@ -173,7 +173,7 @@ module.exports.getPedidosByDni = async (req, res) => {
     if (validsOnly == "true") {
       query.vigente = true;
     }
-    const totalCount = await Pedido.countDocuments(query); // Obtener el total de documentos que coinciden con la consulta
+    const totalCount = await Pedido.countDocuments({...query, "docente.dni": dni}); // Obtener el total de documentos que coinciden con la consulta
 
     const data = await Pedido.find(query)
       .populate({
@@ -190,7 +190,7 @@ module.exports.getPedidosByDni = async (req, res) => {
       })
       .skip((page - 1) * perPage) // Saltar los documentos según la página solicitada
       .limit(perPage); // Limitar la cantidad de documentos por página
-
+      console.log(data)
     return res.json({
       totalCount,
       currentPage: parseInt(page),
