@@ -140,7 +140,7 @@ module.exports.getPedidosByDni = async (req, res) => {
   } = req.query;
   let query = {};
   try {
-    //query.docente.dni = dni;
+    //query.docente = {dni}
     if (fecha_utilizacion) {
       const fechaUtilizacionStart = new Date(fecha_utilizacion);
       fechaUtilizacionStart.setUTCHours(0, 0, 0, 0);
@@ -175,7 +175,7 @@ module.exports.getPedidosByDni = async (req, res) => {
     }
     const totalCount = await Pedido.countDocuments({...query, "docente.dni": dni}); // Obtener el total de documentos que coinciden con la consulta
 
-    const data = await Pedido.find(query)
+    const data = await Pedido.find({...query, "docente.dni": dni})
       .populate({
         path: "lista_equipos.equipo",
         select: "descripcion clase",
