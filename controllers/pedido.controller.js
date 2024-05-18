@@ -187,6 +187,7 @@ module.exports.getPedidosByDni = async (req, res) => {
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
       })
+      .sort({ fecha_utilizacion: -1 })
       .skip((page - 1) * perPage) // Saltar los documentos según la página solicitada
       .limit(perPage); // Limitar la cantidad de documentos por página
 
@@ -311,6 +312,7 @@ module.exports.getPedidosByDates = async (req, res) => {
         path: "lista_reactivos.reactivo",
         select: "descripcion cas",
       })
+      .sort({ fecha_utilizacion: -1 })  
       .skip((page - 1) * perPage) // Saltar los documentos según la página solicitada
       .limit(perPage); // Limitar la cantidad de documentos por página
 
