@@ -370,9 +370,7 @@ module.exports.deletePedidoById = async (req, res) => {
 
 module.exports.countPedidos = async (req, res) => {
   try {
-    console.log("1");
     const count = await Pedido.countDocuments({});
-    console.log(count);
     return res.json({ count });
   } catch (error) {
     return res.status(400).json({ message: error.message });
