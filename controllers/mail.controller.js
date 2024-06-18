@@ -33,7 +33,7 @@ module.exports.sendMail = async (req, res) => {
     try {
         const id = req.body._id;
         const listMens = {list_mensajes:req.body.list_mensajes};
-        await Mail.findOneAndUpdate(id,listMens);
+        await Mail.findOneAndUpdate({ _id: id },listMens);
         return res.status(200).json('ok');
     } catch (error) {
         return res.status(400).json({ message: error.message });
