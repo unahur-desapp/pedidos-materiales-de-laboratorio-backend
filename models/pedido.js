@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const dataSchema = new mongoose.Schema({
   docente: {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario" },
     nombre: String,
     apellido: String,
     dni: Number,
