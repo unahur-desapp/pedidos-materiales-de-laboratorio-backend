@@ -55,7 +55,6 @@ io.on('connection', (socket) => {
 
   // Manejar mensaje en una sala específica
   socket.on('sendMessage', (pedidoId, message) => {
-    console.log(pedidoId)
     io.to(pedidoId).emit('chatMessage', message);
   });
 

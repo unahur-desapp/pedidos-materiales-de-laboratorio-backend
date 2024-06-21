@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 
 const dataSchema = new mongoose.Schema({
   
-  id_pedido: {
-    type: String,
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Pedido"
   },
   list_mensajes :[
       {
