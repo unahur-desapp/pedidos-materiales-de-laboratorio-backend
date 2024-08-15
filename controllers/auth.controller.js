@@ -5,7 +5,7 @@ dotenv.config();
 
 module.exports.register = async (req, res) => {
   try {
-    let user = await Usuario.findOne({email});
+    let user = await Usuario.findOne({email: req.body.email});
     if(user) throw { code: 11000 }
     user = new Usuario({
       usuario: req.body.usuario,
@@ -30,6 +30,7 @@ module.exports.register = async (req, res) => {
 
     return res.status(200).json({data, token, expiresIn});
   } catch (error) {
+    console.log(error);
     if(error.code === 11000) return res.status(400).json({error: "ya existe este usuario"});
     return res.status(500).json({ error: "Error de servidor"}); 
   }
@@ -37,9 +38,11 @@ module.exports.register = async (req, res) => {
 
 //Get por usuario y contrasenia
 module.exports.login = async (req, res) => {
+  console.log('entering login');
   try {
     const { usuario, password } = req.body;
     const pass = Buffer.from(password, "base64").toString();
+    console.log({ password, pass });
     const user = await Usuario.findOne({
       usuario,
     });

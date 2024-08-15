@@ -73,7 +73,7 @@ module.exports.postPedido = async (req, res) => {
 };
 
 module.exports.getPedidos = async (req, res) => {
-  await startDailyUpdate();
+  // await startDailyUpdate();
   const validsOnly = req.params.validsOnly;
 
   try {
