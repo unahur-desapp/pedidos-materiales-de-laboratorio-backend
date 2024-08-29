@@ -2,13 +2,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 const MongooseProvider = {
   imports: [ConfigModule],
-  useFactory: async (configService: ConfigService) => {
-    const uri = buildMongoUri(configService);
-    console.log({ uri });
-    return {
-      uri,
-    };
-  },
+  useFactory: async (configService: ConfigService) => ({
+    uri: buildMongoUri(configService),
+  }),
   inject: [ConfigService],
 };
 
