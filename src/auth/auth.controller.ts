@@ -1,4 +1,4 @@
-import { Body, Controller, Post, HttpCode } from '@nestjs/common';
+import { Body, Controller, Post, HttpCode, Headers } from '@nestjs/common';
 import AuthService from './auth.service';
 
 @Controller('/auth')
@@ -13,8 +13,15 @@ export default class AuthController {
   }
 
   @Post('/login')
-  gisterUser(@Body() body: unknown) {
+  loginUser(@Body() body: unknown) {
     const { email, password } = body as any;
     return this.authService.loginUser(email, password);
+  }
+
+  @Post('/token')
+  getAccessToken(@Headers() headers: unknown) {
+    const { authorization } = headers as any;
+    console.log({ authorization });
+    return this.authService.exchangeAccessToken(authorization.split(' ')[1]);
   }
 }

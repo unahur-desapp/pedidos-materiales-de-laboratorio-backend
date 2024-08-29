@@ -6,7 +6,7 @@ import handlePromise from '../utils/promise';
 import { BackendException } from '../shared/backend.exception';
 
 @Injectable()
-export default class UserSerivice {
+export default class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async findByEmail(email: string): Promise<User> {
@@ -23,12 +23,14 @@ export default class UserSerivice {
       );
     }
 
-    console.log({ user });
-
     return user;
   }
 
   async createUser(user: User): Promise<User> {
     return this.userModel.create(user);
+  }
+
+  async validatePassword(user: User, password: string): Promise<boolean> {
+    return user.comparePassword(password);
   }
 }

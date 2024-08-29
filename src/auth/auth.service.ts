@@ -1,12 +1,18 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { User } from '../schemas/user';
 import handlePromise from '../utils/promise';
 import { BackendException } from '../shared/backend.exception';
-import UserSerivice from '../service/user.service';
+import UserService from '../service/user.service';
+import { RefreshTokenPayload, AccessTokenPayload } from '../types/jwt-payload';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export default class AuthService {
-  constructor(private readonly userService: UserSerivice) {}
+  constructor(
+    private readonly userService: UserService,
+    @Inject('ACCESS_TOKEN') private readonly accessTokenService: JwtService,
+    @Inject('REFRESH_TOKEN') private readonly refreshTokenService: JwtService,
+  ) {}
 
   public async registerUser(user: User) {
     const [dbUser, getUserErr] = await handlePromise(
@@ -48,7 +54,7 @@ export default class AuthService {
     }
 
     const [isValidPwd, pwdErr] = await handlePromise(
-      user.comparePassword(password),
+      this.userService.validatePassword(user, password),
     );
 
     if (pwdErr) {
@@ -65,6 +71,54 @@ export default class AuthService {
       );
     }
 
-    return `refresh token`;
+    const payload = this.buildRefreshTokenPayload(user);
+
+    return {
+      access_token: await this.refreshTokenService.signAsync(payload),
+    };
+  }
+
+  public async exchangeAccessToken(refreshToken: string) {
+    const isValidRefreshToken = this.refreshTokenService.verify(refreshToken);
+
+    if (!isValidRefreshToken) {
+      throw new BackendException(
+        `Invalid refresh token`,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const refreshPayload = this.refreshTokenService.decode(refreshToken);
+
+    const [user, getUserErr] = await handlePromise(
+      this.userService.findByEmail(refreshPayload.email),
+    );
+
+    if (getUserErr) {
+      throw getUserErr;
+    }
+
+    const payload = this.buildAccessTokenPayload(user);
+
+    return this.accessTokenService.signAsync(payload);
+  }
+
+  private buildAccessTokenPayload(user: User): AccessTokenPayload {
+    const { role, name, lastName, email } = user;
+
+    return {
+      role,
+      name,
+      lastName,
+      email,
+    };
+  }
+
+  private buildRefreshTokenPayload(user: User): RefreshTokenPayload {
+    const { email } = user;
+
+    return {
+      email,
+    };
   }
 }
