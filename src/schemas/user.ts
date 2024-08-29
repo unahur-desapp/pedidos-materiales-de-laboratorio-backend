@@ -27,9 +27,7 @@ export class User {
   @Prop({ required: true })
   role: string[];
 
-  async comparePassword(candidatePassword: string): Promise<boolean> {
-    return bcrypt.compare(candidatePassword, this.password);
-  }
+  comparePassword: Function;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -47,3 +45,9 @@ UserSchema.pre<UserDocument>('save', async function (next) {
     throw new Error('Failed to create hashed password: ' + error);
   }
 });
+
+UserSchema.methods.comparePassword = async function (
+  candidatePassword: string,
+): Promise<boolean> {
+  return bcrypt.compare(candidatePassword, this.password);
+};

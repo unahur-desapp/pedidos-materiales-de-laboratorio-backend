@@ -1,5 +1,7 @@
-export class BackendException extends Error {
-  constructor(message: string) {
-    super(message);
+import { HttpException, HttpStatus } from '@nestjs/common';
+
+export class BackendException extends HttpException {
+  constructor(message: string, httpStatus: HttpStatus) {
+    super(message, httpStatus);
   }
 }

@@ -1,4 +1,6 @@
-export default function handlePromise(promise: Promise<any>) {
+export default function handlePromise<T>(
+  promise: Promise<T>,
+): Promise<T[] | [null, unknown]> {
   return promise.then((data) => [data]).catch((err) => [null, err]);
 }
 

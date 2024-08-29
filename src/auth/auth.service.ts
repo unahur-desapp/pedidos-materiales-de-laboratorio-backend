@@ -1,17 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '../schemas/user';
-import { Model } from 'mongoose';
 import handlePromise from '../utils/promise';
 import { BackendException } from '../shared/backend.exception';
+import UserSerivice from '../service/user.service';
 
 @Injectable()
 export default class AuthService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(private readonly userService: UserSerivice) {}
 
   public async registerUser(user: User) {
     const [dbUser, getUserErr] = await handlePromise(
-      this.findByUsername(user.username),
+      this.userService.findByEmail(user.email),
     );
 
     if (getUserErr) {
@@ -19,34 +18,53 @@ export default class AuthService {
     }
 
     if (dbUser) {
-      // FIXME: return 400 user already exists
-      throw new BackendException(`Username ${user.username} already exists.`);
+      throw new BackendException(
+        `Username ${user.email} already exists.`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const [newUser, createUserErr] = await handlePromise(
-      this.userModel.create(user),
+      this.userService.createUser(user),
     );
 
     if (createUserErr) {
       throw new BackendException(
-        `Cannot create user ${user.username}. Reason: ${createUserErr}`,
+        `Cannot create user ${user.email}. Reason: ${createUserErr}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
     return newUser;
   }
 
-  async findByUsername(username: string) {
-    const [user, err] = await handlePromise(
-      this.userModel.findOne({
-        username,
-      }),
+  public async loginUser(email: string, password: string) {
+    const [user, getUserErr] = await handlePromise(
+      this.userService.findByEmail(email),
     );
 
-    if (err) {
-      throw new BackendException(`Cannot get user ${username}. Reason: ${err}`);
+    if (getUserErr) {
+      throw getUserErr;
     }
 
-    return user;
+    const [isValidPwd, pwdErr] = await handlePromise(
+      user.comparePassword(password),
+    );
+
+    if (pwdErr) {
+      throw new BackendException(
+        `Cannot validate usar: ${pwdErr}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    if (!isValidPwd) {
+      throw new BackendException(
+        `Credentials are invalid`,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    return `refresh token`;
   }
 }
