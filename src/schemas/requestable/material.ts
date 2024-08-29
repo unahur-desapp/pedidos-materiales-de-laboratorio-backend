@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { InUse } from '../common/inUse';
 
 export type MaterialDocument = HydratedDocument<Material>;
 
@@ -17,20 +18,8 @@ export class Material {
   @Prop({ required: true })
   stock: number;
 
-  @Prop([
-    {
-      id: { type: String },
-      startDate: { type: Date },
-      endDate: { type: Date },
-      quantity: { type: Number },
-    },
-  ])
-  inUse: Array<{
-    id: string;
-    startDate: Date;
-    endDate: Date;
-    quantity: number;
-  }>;
+  @Prop({ type: [InUse] })
+  inUse: InUse[];
 
   @Prop()
   inRepair: number;

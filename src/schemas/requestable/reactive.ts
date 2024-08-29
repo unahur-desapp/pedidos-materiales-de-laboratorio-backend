@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { InUse } from '../common/inUse';
 
 export type ReactiveDocument = HydratedDocument<Reactive>;
 
@@ -14,8 +15,8 @@ export class Reactive {
   @Prop()
   stock: number;
 
-  @Prop()
-  inUse: number;
+  @Prop({ type: [InUse] })
+  inUse: InUse[];
 
   @Prop({ required: true, default: true })
   isAvailable: boolean;

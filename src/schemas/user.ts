@@ -7,7 +7,7 @@ export type UserDocument = HydratedDocument<User>;
 @Schema()
 export class User {
   @Prop({ required: true })
-  username: string; // FIXME: do we really need a username? can't we just use email validation?
+  email: string;
 
   @Prop({ required: true })
   password: string;
@@ -25,16 +25,7 @@ export class User {
   matricula?: number; // FIXME: Why do we need this? also let's pick a name for this attribute
 
   @Prop({ required: true })
-  role: string;
-
-  @Prop({ required: true })
-  isEditor: boolean; // FIXME: Why do we need this? shouldn't it be a role?
-
-  @Prop()
-  isAdmin?: boolean; // FIXME: Why do we need this? shouldn't it be a role?
-
-  @Prop({ required: true })
-  email: string;
+  role: string[];
 
   async comparePassword(candidatePassword: string): Promise<boolean> {
     return bcrypt.compare(candidatePassword, this.password);
