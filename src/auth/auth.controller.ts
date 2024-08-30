@@ -1,6 +1,7 @@
-import { Body, Controller, Post, HttpCode, Headers } from '@nestjs/common';
+import { Body, Controller, Post, HttpCode, Request } from '@nestjs/common';
 import AuthService from './auth.service';
 import { Public, RefreshAuth } from '../config/accesor.metadata';
+import { RefreshTokenPayload } from 'src/types/jwt-payload';
 
 @Controller('/auth')
 export default class AuthController {
@@ -23,9 +24,8 @@ export default class AuthController {
 
   @RefreshAuth()
   @Post('/token')
-  getAccessToken(@Headers() headers: unknown) {
-    const { authorization } = headers as any;
-    console.log({ authorization });
-    return this.authService.exchangeAccessToken(authorization.split(' ')[1]);
+  getAccessToken(@Request() request: Record<string, unknown>) {
+    const { email } = request.auth as RefreshTokenPayload;
+    return this.authService.getAccessToken(email);
   }
 }

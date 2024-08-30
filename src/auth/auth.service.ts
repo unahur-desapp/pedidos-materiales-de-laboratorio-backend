@@ -78,7 +78,7 @@ export default class AuthService {
     };
   }
 
-  public async exchangeAccessToken(email: string) {
+  public async getAccessToken(email: string) {
     const [user, getUserErr] = await handlePromise(
       this.userService.findByEmail(email),
     );
