@@ -78,20 +78,9 @@ export default class AuthService {
     };
   }
 
-  public async exchangeAccessToken(refreshToken: string) {
-    const isValidRefreshToken = this.refreshTokenService.verify(refreshToken);
-
-    if (!isValidRefreshToken) {
-      throw new BackendException(
-        `Invalid refresh token`,
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
-    const refreshPayload = this.refreshTokenService.decode(refreshToken);
-
+  public async exchangeAccessToken(email: string) {
     const [user, getUserErr] = await handlePromise(
-      this.userService.findByEmail(refreshPayload.email),
+      this.userService.findByEmail(email),
     );
 
     if (getUserErr) {
