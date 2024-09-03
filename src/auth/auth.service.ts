@@ -52,6 +52,13 @@ export class AuthService {
       throw getUserErr;
     }
 
+    if (!user) {
+      throw new BackendException(
+        `Credentials are invalid`,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     const [isValidPwd, pwdErr] = await handlePromise(
       this.userService.validatePassword(user, password),
     );
