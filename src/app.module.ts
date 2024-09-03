@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import MongooseProvider from './config/mongoose.provider';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { AuthGuardProvider } from './config/auth-guard.provider';
+import { AuthGuardProvider } from './auth/providers/auth-guard.provider';
 
 @Module({
   imports: [

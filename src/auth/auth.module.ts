@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
-import AuthController from './auth.controller';
-import AuthService from './auth.service';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../schemas/user';
-import UserService from '../service/user.service';
+import { UserService } from '../service/user.service';
+import { AccessTokenProvider } from './providers/auth-token.provider';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import {
-  AccessTokenProvider,
-  RefreshTokenProvider,
-} from '../config/jwt.provider';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    ConfigModule,
     JwtModule.registerAsync(AccessTokenProvider),
-    JwtModule.registerAsync(RefreshTokenProvider),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, JwtService],
+  providers: [UserService, JwtStrategy, LocalStrategy, AuthService],
 })
 export class AuthModule {}

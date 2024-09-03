@@ -5,4 +5,3 @@ export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
 export const IS_REFRESH_KEY = 'isRefresh';
 export const RefreshAuth = () => SetMetadata(IS_REFRESH_KEY, true);
-1;

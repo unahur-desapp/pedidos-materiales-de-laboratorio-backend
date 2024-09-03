@@ -1,10 +1,17 @@
-import { Body, Controller, Post, HttpCode, Request } from '@nestjs/common';
-import AuthService from './auth.service';
-import { Public, RefreshAuth } from '../config/accesor.metadata';
-import { RefreshTokenPayload } from 'src/types/jwt-payload';
+import {
+  Body,
+  Controller,
+  Post,
+  HttpCode,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { LocalAuthGuard } from './strategies/local.guard';
+import { Public } from './providers/accesor.metadata';
 
 @Controller('/auth')
-export default class AuthController {
+export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
@@ -16,16 +23,10 @@ export default class AuthController {
   }
 
   @Public()
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
   loginUser(@Body() body: unknown) {
     const { email, password } = body as any;
     return this.authService.loginUser(email, password);
-  }
-
-  @RefreshAuth()
-  @Post('/token')
-  getAccessToken(@Request() request: Record<string, unknown>) {
-    const { email } = request.auth as RefreshTokenPayload;
-    return this.authService.getAccessToken(email);
   }
 }

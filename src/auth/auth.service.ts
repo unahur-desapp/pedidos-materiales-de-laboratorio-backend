@@ -2,16 +2,15 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { User } from '../schemas/user';
 import handlePromise from '../utils/promise';
 import { BackendException } from '../shared/backend.exception';
-import UserService from '../service/user.service';
-import { RefreshTokenPayload, AccessTokenPayload } from '../types/jwt-payload';
+import { UserService } from '../service/user.service';
+import { AccessTokenPayload } from '../types/jwt-payload';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export default class AuthService {
+export class AuthService {
   constructor(
     private readonly userService: UserService,
-    @Inject('ACCESS_TOKEN') private readonly accessTokenService: JwtService,
-    @Inject('REFRESH_TOKEN') private readonly refreshTokenService: JwtService,
+    private readonly accessTokenService: JwtService,
   ) {}
 
   public async registerUser(user: User) {
@@ -71,25 +70,11 @@ export default class AuthService {
       );
     }
 
-    const payload = this.buildRefreshTokenPayload(user);
-
-    return {
-      access_token: await this.refreshTokenService.signAsync(payload),
-    };
-  }
-
-  public async getAccessToken(email: string) {
-    const [user, getUserErr] = await handlePromise(
-      this.userService.findByEmail(email),
-    );
-
-    if (getUserErr) {
-      throw getUserErr;
-    }
-
     const payload = this.buildAccessTokenPayload(user);
 
-    return this.accessTokenService.signAsync(payload);
+    return {
+      access_token: await this.accessTokenService.signAsync(payload),
+    };
   }
 
   private buildAccessTokenPayload(user: User): AccessTokenPayload {
@@ -99,14 +84,6 @@ export default class AuthService {
       role,
       name,
       lastName,
-      email,
-    };
-  }
-
-  private buildRefreshTokenPayload(user: User): RefreshTokenPayload {
-    const { email } = user;
-
-    return {
       email,
     };
   }

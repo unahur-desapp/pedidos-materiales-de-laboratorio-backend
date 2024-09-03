@@ -6,7 +6,7 @@ import handlePromise from '../utils/promise';
 import { BackendException } from '../shared/backend.exception';
 
 @Injectable()
-export default class UserService {
+export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async findByEmail(email: string): Promise<User> {
