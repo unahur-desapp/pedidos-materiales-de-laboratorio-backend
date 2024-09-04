@@ -4,6 +4,7 @@ import MongooseProvider from './config/mongoose.provider';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuardProvider } from './auth/providers/auth-guard.provider';
+import  { EquipmentModule } from './equipment/equipment.module';
 
 @Module({
   imports: [
