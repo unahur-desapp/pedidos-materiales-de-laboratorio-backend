@@ -3,7 +3,7 @@ import { EquipmentService } from './equipment.service';
 import { Equipment } from 'src/schemas/requestable/equipment';
 import { query, Request, Response } from 'express';
 
-@Controller('equipment')
+@Controller('/equipment')
 export class EquipmentController {
     constructor(private EquipmentService: EquipmentService) {}
 
