@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { EquipmentService } from './equipment.service';
 import { Equipment } from 'src/schemas/requestable/equipment';
-import { query, Request, Response } from 'express';
+
 
 @Controller('/equipment')
 export class EquipmentController {
@@ -13,7 +13,7 @@ export class EquipmentController {
         return this.EquipmentService.createEquipment(equipment);
     }
 
-    @Get('/all') 
+    @Get('/') 
     getAll()
     {
         return this.EquipmentService.getEquipments();

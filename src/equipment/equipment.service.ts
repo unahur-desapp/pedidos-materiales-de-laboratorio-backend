@@ -1,13 +1,19 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { Equipment } from '../schemas/requestable/equipment';
-import { Model } from 'mongoose';
 import handlePromise from '../utils/promise';
 import { BackendException } from '../shared/backend.exception';
+import { Model } from 'mongoose';
+import { EquipmentController } from './equipment.controller';
+import { EquipmentModule } from './equipment.module';
+import { InjectModel } from '@nestjs/mongoose';
+
 
 @Injectable()
 export class EquipmentService {
-  constructor(@InjectModel(Equipment.name) private EquipmentModel: Model<Equipment>) { }
+  constructor( 
+    @InjectModel(Equipment.name)
+    private EquipmentModel: Model<Equipment>
+  ) { }
 
   async createEquipment(equipment: Equipment): Promise<Equipment> {
     return this.EquipmentModel.create(equipment);
