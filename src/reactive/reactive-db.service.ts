@@ -1,106 +1,85 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { Reactive } from '../schemas/requestable/reactive';
-import handlePromise from '../utils/promise';
-import { BackendException } from '../shared/backend.exception';
+import {  Injectable } from '@nestjs/common';
+import {  InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { ReactiveController } from './reactive.controller';
-import { ReactiveModule } from './reactive.module';
-import { InjectModel } from '@nestjs/mongoose';
-
+import handlePromise from '../utils/promise';
+import { Reactive } from '../schemas/requestable/reactive';
+import { BackendException } from '../shared/backend.exception';
+import { cantCreateReactive , cantSearchReactive ,cantUpdateReactive , cantDeleteReactive, cantSearchReactiveById as cantGetReactiveById , } from './reactive.errors' 
 
 @Injectable()
-export class ReactiveService {
+export class ReactivedbService {
   constructor( 
     @InjectModel(Reactive.name)
     private ReactiveModel: Model<Reactive>
   ) { }
 
-  async createReactive(Reactive: Reactive): Promise<Reactive> {
-    return this.ReactiveModel.create(Reactive);
+  async createReactive(reactive: Reactive): Promise<Types.ObjectId> {
+    const [e, createErr] = await handlePromise(
+     this.ReactiveModel.create(reactive),
+    );
+    if (createErr)
+    {
+            throw new Error(cantCreateReactive(createErr))
+    }
+    return e._id
   }
 
-  async getReactive(description: string): Promise<Reactive[]> {
-    const [Reactives, err] = await handlePromise(
-      this.ReactiveModel.find({
+  async searchReactive(description: string): Promise<Reactive[]> {
+    const [reactives, searchErr] = await handlePromise(this.ReactiveModel.find({
         $and: [
-          { $or:[  
-                    {description: { $regex: description, $options: "i" }},
-                    {cas: { $regex: description, $options: "i" }}
-          ] },
+          { description: { $regex: description, $options: "i" } },
           { available: true }
         ],
-      }).sort({ type: 'asc', description: 'asc' })
-    );
+      }).sort({ type: 'asc', description: 'asc' }))
 
-    if (err) {
-      throw new BackendException(
-        `Cannot get Reactive ${description}. Reason: ${err}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-
-    return Reactives;
+      if(searchErr){
+        throw new Error(cantSearchReactive(searchErr))
+      }
+      return reactives
   }
 
   async getReactives(): Promise<Reactive[]> {
-    const [Reactives, err] = await handlePromise(
+    const [reactives, err] = await handlePromise(
       this.ReactiveModel.find(
         { available: true })
     );
 
     if (err) {
-      throw new BackendException(
-        `Cannot get Reactives Reason: ${err}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+       throw new Error(cantSearchReactive(err))
     }
-
-    return Reactives;
+    return reactives;
   }
- async getReactiveById(id: Types.ObjectId): Promise<Reactive> {
-    const [Reactive, err] = await handlePromise(
+
+  async getReactiveById(id: Types.ObjectId): Promise<Reactive> {
+
+    const [reactive, err] = await handlePromise(
       this.ReactiveModel.findById(id)
     );
-    if (err) {
-      throw new BackendException(
-        `Cannot get Reactive ${id}. Reason: ${err}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
 
-    return Reactive;
+    if (err) {
+          throw new Error(cantGetReactiveById(id, err))
+        }
+    return reactive;
   }
 
-
-
-  async updateReactiveById(id: Types.ObjectId, Reactive: Reactive): Promise<Reactive> {
+  async updateReactiveById(id: Types.ObjectId, reactive: Reactive): Promise<Reactive> {
     const [result, err] = await handlePromise(
-      this.ReactiveModel.updateOne({ _id: id }, Reactive, { new: true })
+      this.ReactiveModel.updateOne({ _id: id }, reactive, { new: true })
     );
     if (err) {
-      throw new BackendException(
-        `Cannot get Reactive ${id}. Reason: ${err}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+          throw new Error(cantUpdateReactive(id,err));
     }
-    return Reactive; // TODO: Check how return the updated Reactive with the last changes
+    return reactive; // TODO: Check how return the updated reactive with the last changes
   }
 
-
-
   async deleteReactiveById(id: Types.ObjectId): Promise<String> {
-    const [Reactive, err] = await handlePromise(
+    const [reactive, err] = await handlePromise(
       this.ReactiveModel.findByIdAndDelete(id)
     );
     if (err) {
-      throw new BackendException(
-        `Cannot get Reactive ${id}. Reason: ${err}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-
+        throw new Error(cantDeleteReactive(id,err));      
     }
-    return `Reactive with description ${Reactive.description} and id ${Reactive.id} was deleted successfully`;
+    return `Reactive with description ${reactive.description} and id ${reactive.id} was deleted successfully`;
   }
 
 

@@ -6,101 +6,97 @@ import { Model, Types } from 'mongoose';
 import { ReactiveController } from './reactive.controller';
 import { ReactiveModule } from './reactive.module';
 import { InjectModel } from '@nestjs/mongoose';
+import { ReactivedbService } from './reactive-db.service'
 
 
 @Injectable()
 export class ReactiveService {
   constructor( 
     @InjectModel(Reactive.name)
-    private ReactiveModel: Model<Reactive>
+    private ReactiveModel: Model<Reactive>,
+    private readonly dbReactive: ReactivedbService,
+
   ) { }
 
-  async createReactive(Reactive: Reactive): Promise<Reactive> {
-    return this.ReactiveModel.create(Reactive);
+  async createReactive(reactive: Reactive): Promise<Types.ObjectId> {
+    const [newreactive , err ] = await   handlePromise(this.dbReactive.createReactive(reactive))
+
+    if (err) {
+        throw new BackendException( (err as Error).message, HttpStatus.INTERNAL_SERVER_ERROR,);
+      }
+
+    return newreactive._id
   }
 
   async getReactive(description: string): Promise<Reactive[]> {
-    const [Reactives, err] = await handlePromise(
-      this.ReactiveModel.find({
-        $and: [
-          { $or:[  
-                    {description: { $regex: description, $options: "i" }},
-                    {cas: { $regex: description, $options: "i" }}
-          ] },
-          { available: true }
-        ],
-      }).sort({ type: 'asc', description: 'asc' })
-    );
-
+    const [reactives, err] = await handlePromise(
+                              this.dbReactive.searchReactive(description)  
+                              );
     if (err) {
-      throw new BackendException(
-        `Cannot get Reactive ${description}. Reason: ${err}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+        throw new BackendException(
+          ( err as Error).message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );    
     }
-
-    
-    return Reactives;
+    return reactives;
   }
 
   async getReactives(): Promise<Reactive[]> {
-    const [Reactives, err] = await handlePromise(
-      this.ReactiveModel.find(
-        { available: true })
+    const [reactives, err] = await handlePromise(
+      this.dbReactive.getReactives()
     );
 
     if (err) {
-      throw new BackendException(
-        `Cannot get Reactives Reason: ${err}`,
+     throw new BackendException(
+        (err as Error).message,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
-    return Reactives;
+    return reactives;
   }
- async getReactiveById(id: Types.ObjectId): Promise<Reactive> {
-    const [Reactive, err] = await handlePromise(
-      this.ReactiveModel.findById(id)
+
+  async getReactiveById(id: Types.ObjectId): Promise<Reactive> {
+    const [reactive, err] = await handlePromise(
+      this.dbReactive.getReactiveById(id)
     );
     if (err) {
       throw new BackendException(
-        `Cannot get Reactive ${id}. Reason: ${err}`,
+        (err as Error).message,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-
-    return Reactive;
+    return reactive;
   }
 
 
 
-  async updateReactiveById(id: Types.ObjectId, Reactive: Reactive): Promise<Reactive> {
+  async updateReactiveById(id: Types.ObjectId, reactive: Reactive): Promise<Reactive> {
     const [result, err] = await handlePromise(
-      this.ReactiveModel.updateOne({ _id: id }, Reactive, { new: true })
+     this.dbReactive.updateReactiveById(id,reactive)
     );
     if (err) {
       throw new BackendException(
-        `Cannot get Reactive ${id}. Reason: ${err}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
+            (err as Error).message,
+             HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    return Reactive; // TODO: Check how return the updated Reactive with the last changes
+    return reactive; // TODO: Check how return the updated reactive with the last changes
   }
 
 
 
   async deleteReactiveById(id: Types.ObjectId): Promise<String> {
-    const [Reactive, err] = await handlePromise(
-      this.ReactiveModel.findByIdAndDelete(id)
+    const [reactive, err] = await handlePromise(
+      this.dbReactive.deleteReactiveById(id)
     );
     if (err) {
       throw new BackendException(
-        `Cannot get Reactive ${id}. Reason: ${err}`,
+        (err as Error).message,
         HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-      
+      );      
     }
-    return `Reactive with description ${Reactive.description} and id ${Reactive.id} was deleted successfully`;
+    return `Reactive with description was deleted successfully`;
   }
 
 

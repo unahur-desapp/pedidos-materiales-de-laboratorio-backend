@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
  export function  cantCreateReactive( reason: unknown,){
     return `Cannot create Reactive with id . Reason: ${reason}`;
 } 
- export function  cantSearchReative(
+ export function  cantSearchReactive(
     reason: unknown,){
     return `Cannot Search Reactive Reason: ${reason}`;
 }

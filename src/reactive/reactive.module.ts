@@ -6,7 +6,8 @@ import { Reactive ,ReactiveSchema } from 'src/schemas/requestable/reactive';
 
 
 @Module({
-    imports: [ MongooseModule.forFeature([{ name: Reactive.name, schema: ReactiveSchema }]),],
+    imports: [ MongooseModule.forFeature([{ name: Reactive.name, 
+                                            schema: ReactiveSchema }]),],
     controllers: [ReactiveController],
     providers: [ReactiveService],
 })
