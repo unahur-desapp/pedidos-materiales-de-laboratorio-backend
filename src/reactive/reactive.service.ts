@@ -18,38 +18,33 @@ export class ReactiveService {
 
   ) { }
 
-  async createReactive(reactive: Reactive): Promise<Types.ObjectId> {
+  async createReactive(reactive: Reactive): Promise<HttpStatus> {
     const [newreactive , err ] = await   handlePromise(this.dbReactive.createReactive(reactive))
 
     if (err) {
         throw new BackendException( (err as Error).message, HttpStatus.INTERNAL_SERVER_ERROR,);
       }
 
-    return newreactive._id
+    return  HttpStatus.CREATED
   }
 
-  async getReactive(description: string): Promise<Reactive[]> {
+ 
+  async getReactives(available:boolean = true): Promise<Reactive[]> {
     const [reactives, err] = await handlePromise(
-                              this.dbReactive.searchReactive(description)  
-                              );
-    if (err) {
-        throw new BackendException(
-          ( err as Error).message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );    
-    }
-    return reactives;
-  }
-
-  async getReactives(): Promise<Reactive[]> {
-    const [reactives, err] = await handlePromise(
-      this.dbReactive.getReactives()
+      this.dbReactive.getReactives(available)
     );
 
     if (err) {
      throw new BackendException(
         (err as Error).message,
         HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    if (!reactives) {
+      throw new BackendException(
+        (err as Error).message,
+        HttpStatus.NOT_FOUND,
       );
     }
 
@@ -66,6 +61,14 @@ export class ReactiveService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+
+    if (!reactive) {
+      throw new BackendException(
+        (err as Error).message,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return reactive;
   }
 
@@ -81,12 +84,13 @@ export class ReactiveService {
              HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    return reactive; // TODO: Check how return the updated reactive with the last changes
+
+    return reactive; 
   }
 
 
 
-  async deleteReactiveById(id: Types.ObjectId): Promise<String> {
+  async deleteReactiveById(id: Types.ObjectId) {
     const [reactive, err] = await handlePromise(
       this.dbReactive.deleteReactiveById(id)
     );
@@ -96,8 +100,6 @@ export class ReactiveService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );      
     }
-    return `Reactive with description was deleted successfully`;
   }
-
 
 }

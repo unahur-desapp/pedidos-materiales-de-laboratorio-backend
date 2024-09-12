@@ -38,10 +38,10 @@ export class ReactivedbService {
       return reactives
   }
 
-  async getReactives(): Promise<Reactive[]> {
+  async getReactives(available:boolean): Promise<Reactive[]> {
     const [reactives, err] = await handlePromise(
       this.ReactiveModel.find(
-        { available: true })
+        { available: available })
     );
 
     if (err) {

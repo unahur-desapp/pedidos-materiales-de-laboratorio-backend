@@ -8,13 +8,13 @@ import { Reactive } from 'src/schemas/requestable/reactive';
 export class ReactiveController {
     constructor(private ReactiveService : ReactiveService){}
     
-    @Post('/')
+    @Post()
     createReactive(@Body() reactive: Reactive,)
     {
         return this.ReactiveService.createReactive(reactive)
     }
 
-    @Get('/')
+    @Get()
     getReactives()
     {
         return this.ReactiveService.getReactives()
